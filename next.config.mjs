@@ -4,7 +4,7 @@ import remarkToc from "remark-toc"
 import remarkEmoji from 'remark-emoji';
 
 import rehypeHighlight from 'rehype-highlight';
-import rehypeKatex from 'rehype-katex';
+import rehypeMathjax from 'rehype-mathjax';
 
 import createMDX from '@next/mdx'
 
@@ -17,7 +17,7 @@ const withMDX = createMDX({
 			remarkEmoji,
 			() => remarkToc({ heading: '(table[ -]of[ -])?contents?|toc|目录' }),],
     rehypePlugins: [
-			rehypeHighlight, rehypeKatex
+			rehypeHighlight, rehypeMathjax
 		],
   },
 })
@@ -25,6 +25,14 @@ const withMDX = createMDX({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+	async rewrites(){
+		return  [
+			{
+				source: '/api/:path*',
+				destination: 'http://127.0.0.1:8080/:path*',
+			},
+		]
+	}
 }
 
 export default withMDX(nextConfig)

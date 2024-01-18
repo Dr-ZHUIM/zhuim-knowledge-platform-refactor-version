@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Head from "next/head";
 
 import "@/assets/styles/animation.scss";
 import "@/assets/styles/common.scss";
 import "@/assets/styles/md.scss";
 import "@/assets/styles/article.scss";
 import "@/assets/styles/normalize.scss";
+// import "@/assets/styles/katex.min.css";
 import { Navbar } from "@/components";
 
 export const metadata: Metadata = {
@@ -19,12 +19,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-        <link
-          href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
-          rel="stylesheet"
-        />
-      </Head>
       <body>
         <main className="flex min-h-full flex-col">
           <Navbar />

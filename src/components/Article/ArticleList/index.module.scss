@@ -1,0 +1,16 @@
+.article-container{
+	.read-more{
+		color: var(--color-light-hover);
+		opacity: 0;
+		transform: translateX(-6px);
+	}
+	&:hover{
+		.title{
+			color: var(--color-light-hover);
+		}
+		.read-more{
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+}
