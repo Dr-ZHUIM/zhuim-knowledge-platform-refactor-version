@@ -13,7 +13,7 @@ type Categorys = Record<string, ArticleReviewDto[]>;
 
 function getLayerList(layer: string) {
   return http_post<ZhuimResponseType<ArticleReviewDto[]>>({
-    url: "/api/article/getArticleListByCategory",
+    url: "/api/article/getArticleListByReview",
     data: {
       layer,
     },
@@ -40,7 +40,7 @@ export default function Post({ params: { layer } }: Params) {
       <h1 className="px-8 mb-12">Post</h1>
       <div>
         {isFetching && <div className="px-8 mb-12">loading...</div>}
-        {!isFetching && <ArticleList articles={data} />}
+        {!isFetching && <ArticleList layer={layer} articles={data} />}
       </div>
     </div>
   );
