@@ -132,6 +132,26 @@ ul {
   }
 }
 
+li p.first {
+  display: inline-block; 
+}
+
+li {
+  margin: 0;
+  list-style-type: disc; 
+}
+
+ul, ol {
+  padding-left: 30px;
+  margin-bottom: 1rem;
+  ul,ol{
+    margin-bottom: initial;
+  } 
+}
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
 table {
   margin-bottom: 1rem;
   display: block;

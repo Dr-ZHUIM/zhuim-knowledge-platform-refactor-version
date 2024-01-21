@@ -1,4 +1,4 @@
-import BreadCrumbs from "../../../components/BreadCrumbs/index";
+import BreadCrumbs from "../../../../components/BreadCrumbs/index";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

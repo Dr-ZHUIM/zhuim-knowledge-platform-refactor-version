@@ -32,7 +32,7 @@ export default function ArticleList(props: ArticleListProps) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 justify-between justify-items-stretch">
             {categorys[category].map((article) => (
-              <ArticleReview article={article} key={article.id} />
+              <ArticleReview article={article} key={article.title} />
             ))}
           </div>
         </section>

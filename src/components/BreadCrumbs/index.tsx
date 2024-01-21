@@ -10,6 +10,7 @@ type BreadCrumbsType = [BreadLabel, BreadPath][];
 
 function splitPath(path: string): BreadCrumbsType {
   const pathpool = path.slice(1).split("/");
+  pathpool.pop();
   const result: [BreadLabel, BreadPath][] = [];
   pathpool.reduce((acc, cur) => {
     const next = `${acc}/${cur}`;

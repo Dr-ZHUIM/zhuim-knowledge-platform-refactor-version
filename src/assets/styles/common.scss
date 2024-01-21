@@ -93,6 +93,11 @@ html {
   }
 }
 
+html {
+  counter-reset: section;
+}
+
+
 body {
   font-family: var(--font-family);
 }
