@@ -2,15 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components{
+  .container{
+    @apply py-[60px] w-full max-w-[375px] md:max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto
+  }
+}
+
 body{
   --color-font: #000000;
   --color-link:hsl(207, 5%, 42%);
   --color-bg: #ffffff;
+  --color-muted-background: hsl(210deg, 55%, 92%);
+  --color-muted: hsl(245deg, 100%, 60%);
 }
 
 body[data-theme = "dark"]{
   --color-font: #ffffff;
   --color-bg: hsl(210deg, 30%, 8%);
+  --color-muted-background: hsl(210deg, 38%, 15%);
 }
 
 body{
@@ -46,8 +55,6 @@ html {
   --color-primary-900: rgba(0, 21, 41, 0.9);
   --color-light: #002445;
   --color-light-hover: #80b0dd;
-  --color-muted-background: hsl(210deg, 55%, 92%);
-  --color-muted: hsl(245deg, 100%, 60%);
   --color-success: #116526;
   --color-success-background: hsla(135, 71%, 23%, 0.25);
   --color-success-light: #189437;

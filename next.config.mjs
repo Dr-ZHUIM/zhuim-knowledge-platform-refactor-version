@@ -1,6 +1,5 @@
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
-import remarkToc from "remark-toc"
 import remarkEmoji from 'remark-emoji';
 
 import rehypeHighlight from 'rehype-highlight';
@@ -15,7 +14,7 @@ const withMDX = createMDX({
 			remarkMath,
 			remarkGfm,
 			remarkEmoji,
-			() => remarkToc({ heading: '(table[ -]of[ -])?contents?|toc|目录' }),],
+		],
     rehypePlugins: [
 			rehypeHighlight, rehypeMathjax
 		],

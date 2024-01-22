@@ -22,9 +22,7 @@ export default function RootLayout({
       <body>
         <main className="flex min-h-full flex-col">
           <Navbar />
-          <section className="max-w-[375px] w-full mx-auto py-[40px] px-[20px] md:max-w-3xl lg:max-w-5xl">
-            {children}
-          </section>
+          <section className="w-full">{children}</section>
         </main>
       </body>
     </html>

@@ -1,0 +1,16 @@
+$levels: 6;
+@for $i from 1 through $levels {
+	.list-level-#{$i} {
+		margin-left: calc((#{$i} - 2) * 10px);
+		margin-top: calc(10px / (#{$i} - 1));
+		cursor: pointer;
+	}
+}
+
+.list-container{
+	max-height: calc(100vh - 350px);
+	width: calc(100% - 1.25rem);
+	li{
+		list-style-type:  none;
+	}
+}
