@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "fs";
 import { join, resolve } from "path";
 import matter from "gray-matter";
+import {serialize} from "next-mdx-remote/serialize"
 
 const path = resolve("src/articles")
 
@@ -33,9 +34,9 @@ export function getArticles(filters: {
   })
 }
 
-export function getArticle(filename:string){
-  const fileContent = readFileSync(join(path, filename + '.mdx'),'utf8')
-  const { data,content } = matter(fileContent);
+export  function getArticle(filename:string){
+    const fileContent = readFileSync(join(path, filename + '.mdx'),'utf8')
+    const { data,content } = matter(fileContent);
     return {
       category: data.category,
 			title: data.title,
@@ -43,6 +44,6 @@ export function getArticle(filename:string){
 			layer: data.layer,
 			createdat: data.createdat,
       pathname: `/${data.layer}/${data.category}/${filename}`,
-			content
+			content:content,
     };
 }

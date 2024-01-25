@@ -1,7 +1,8 @@
 $levels: 6;
 @for $i from 1 through $levels {
 	h#{$i}{
-		margin-top: 60px;
+    padding-top: 80px;
+		margin-top: -20px;
 		margin-bottom: .5em;
 		font-weight: 500;
 	}

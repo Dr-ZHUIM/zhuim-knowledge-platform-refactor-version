@@ -3,39 +3,45 @@
 import React, { useState, useEffect } from "react";
 import styles from "./index.module.scss";
 import { useHeadsObserver } from "@/hooks";
+import Link from "next/link";
 
 type Heading = {
   text: string;
   level: number;
 };
 
-const range = "h2,h3,h4,h5,h6";
+type TocProps = {
+  levelRange: number;
+};
 
-export default function Toc() {
+const map: Record<number, string> = {
+  1: "h2",
+  2: "h2,h3",
+  3: "h2,h3,h4",
+  4: "h2,h3,h4,h5",
+  5: "h2,h3,h4,h5,h6",
+};
+
+function getHeadingsWithRange(range: number) {
+  return Array.from(document.querySelectorAll(map[range]))
+    .filter((el) => el.id)
+    .map((el) => ({
+      text: el.id,
+      level: Number(el.nodeName.charAt(1)),
+    }));
+}
+
+export default function Toc(props: TocProps) {
+  const { levelRange } = props;
   const [headings, setHeadings] = useState<Heading[]>([]);
   const [init, setInit] = useState(false);
-  const activeId = useHeadsObserver(range);
+  const activeId = useHeadsObserver(map[levelRange]);
 
   useEffect(() => {
-    window.onhashchange = () => {
-      const id = decodeURIComponent(window.location.hash.slice(1));
-      if (id) {
-        const element = document.getElementById(id);
-        if (element) {
-          window.scrollTo(0, element.offsetTop - 120);
-        }
-      }
-      return false;
-    };
-    const nodes = Array.from(document.querySelectorAll(range))
-      .filter((el) => el.id)
-      .map((el) => ({
-        text: el.id,
-        level: Number(el.nodeName.charAt(1)),
-      }));
+    const nodes = getHeadingsWithRange(levelRange);
     setHeadings(nodes);
     setInit(true);
-  }, []);
+  }, [levelRange]);
 
   return (
     <ul

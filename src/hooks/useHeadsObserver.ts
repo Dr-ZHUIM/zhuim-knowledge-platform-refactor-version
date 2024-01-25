@@ -13,8 +13,8 @@ export default function useHeadsObserver(elementsSelector:string) {
 			})
 		}
     observer.current = new IntersectionObserver(handleObsever, {
-      rootMargin: "-20% 0% -35% 0px"}
-    )
+      rootMargin: "-5% 0% -30% 0px"
+		})
 		const elements = document.querySelectorAll(elementsSelector)
   	elements.forEach((elem) => observer.current!.observe(elem))
   	return () => observer.current?.disconnect()

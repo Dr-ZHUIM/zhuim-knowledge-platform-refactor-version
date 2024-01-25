@@ -24,6 +24,19 @@
   }
 }
 
+@keyframes float {
+  from {
+    transform: translateY(0);
+  }
+  to{
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float{
+  animation: float 3s ease-in-out infinite alternate;
+}
+
 .animate-type {
   --cn-words: 4;
   --en-words: 4;

@@ -1,0 +1,279 @@
+---
+title: 编写 TOC 组件
+category: Blog
+sidecategory: ""
+abstract: 在构筑博客系统或者知识平台时，编写 TOC 组件总是很有需求的一件事情，故此本文也会着重于记录如何提供一个可复用的TOC方案。
+layer: Post
+createdat: 2024-1-23 19:03
+---
+
+最近将本博客系统从 Vite 框架转至 Next.js 框架，由于发现 `remark-toc` 库在 Next.js 中表现不佳，于是考虑自己封装一个 TOC 组件。
+
+## 组件定义
+
+由于需要使用浏览器 DOM API 获取元素，同时还要使用 React Hooks，本组件是一个客户端组件。
+
+如果使用 Next.js, 需要在上面提供客户端组件声明 `"use client"`。
+
+```tsx
+"use client";
+
+export default function TOC() {
+  return <></>;
+}
+```
+
+## 获取文章标题
+
+我们需要让组件自获取页面中的所有除去一级标题以外的标题，这个范围使用一个参数 `levelRange` 来调控。
+
+为了方便复用，将范围参数 `levelRange` 使用 props 传递。
+
+```tsx
+type TocProps = {
+  levelRange: number;
+};
+
+export default function TOC(props: TocProps) {
+  return <></>;
+}
+```
+
+通过 DOM API `Document.querySelectorAll` 获取所有的 heading 元素。
+
+```tsx
+// 构建范围表
+const map: Record<number, string> = {
+  1: "h2",
+  2: "h2,h3",
+  3: "h2,h3,h4",
+  4: "h2,h3,h4,h5",
+  5: "h2,h3,h4,h5,h6",
+};
+
+function getHeadingsWithRange(range: number) {
+  return document.querySelectorAll(map[range]);
+}
+```
+
+到这里，我们获取了类型为 `NodeListOf<Element>` 的数据，这些数据是不能直接使用的，我们需要进一步处理。
+
+`NodeListOf<Element>`类型属于可遍历数据，这意味着可以使用 `Array.from` 来构建数组, 同时还需要确保被使用的标题 **拥有 Id 属性** 以供锚点跳转。
+
+```tsx
+function getHeadingsWithRange(range: number) {
+  return Array.from(document.querySelectorAll(map[range])).filter(
+    (el) => el.id
+  );
+}
+```
+
+而这样的数据不足以为我们提供目录分级的功能，所以我们要对数据二次维护,将 DOM 节点的 `nodeName` 提取。
+
+```tsx
+type Heading = {
+  text: string;
+  level: number;
+};
+
+function getHeadingsWithRange(range: number): Heading[] {
+  return Array.from(document.querySelectorAll(map[range]))
+    .filter((el) => el.id)
+    .map((el) => ({
+      text: el.id,
+      level: Number(el.nodeName.charAt(1)),
+    }));
+}
+```
+
+## 将标题 Elements 作为数据驱动渲染
+
+使用 React Hook `useState`, `useEffect` 来生成 state, 以此渲染组件。
+
+```tsx
+//...
+
+export default function TOC(props: TocProps) {
+  const [headings, setHeadings] = useState<Heading[]>([]);
+
+  useEffect(() => {
+    setHeadings(getHeadingsWithRange(levelRange));
+  }, [levelRange]);
+
+  return (
+    <ul className="toc-container">
+      {/* 这是 TOC 标题，我觉得好看就加了 */}
+      <li className="toc-title">TABLE OF CONTENTS</li>
+      {headings.map((item) => (
+        <li key={item.text}>{item.text}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## 使用 Scss 内置语法快速生成 className
+
+虽然我们现在有了分级的 `<li>` 元素，但是在视图上并无区别，这里我们使用 Scss 内置语法快速生成类。
+
+```scss
+// index.module.scss
+$levels: 6;
+@for $i from 1 through $levels {
+  .list-level-#{$i} {
+    margin-left: calc((#{$i} - 2) * 10px);
+    margin-top: calc(10px / (#{$i} - 1));
+    cursor: pointer;
+  }
+}
+```
+
+接下来将 className 导入，根据 heading 的 level 来确认元素的 className。
+
+```tsx
+import styles from "./index.module.scss";
+//...
+
+function TOC(range: number): Heading[] {
+  //...
+  {
+    headings.map((item) => (
+      {/* 遍历即可 */}
+      <li className={`${styles[`list-level-${item.level}`]}`} key={item.text}>
+        {item.text}
+      </li>
+    ));
+  }
+  //...
+}
+```
+
+## 为 li 元素添加书签锚点
+
+接下来，我们来做书签锚点功能。
+
+这一步相当简单，只需要为每一个遍历生成的 li 元素添加 a 标签，将元素的 id 填入 `href` 属性中即可。
+
+```tsx
+//...
+
+function TOC(range: number): Heading[] {
+  //...
+  {
+    headings.map((item) => (
+      <li className={`${styles[`list-level-${item.level}`]}`} key={item.text}>
+        {/* 添加 a 标签 */}
+        <a className="toc-anchor" href={`#${item.text}`}>
+          {item.text}
+        </a>
+      </li>
+    ));
+  }
+  //...
+}
+```
+
+## 利用 padding 解决导航栏遮挡
+
+在常规使用情况下，页面极有可能会有一个顶部导航栏组件，这个组件一般会有 `position:fixed` 的 css 属性中即可。
+
+由如下两个原因就会导致标题会被一定程度的遮挡。
+
+- 顶部导航栏始终占据视图的一部分
+- 书签跳转导致页面滚动到刚好使相关元素置顶的位置
+
+<WaitForImage />
+
+padding 影响锚点元素的定位，margin 不影响锚点元素的定位。所以使用 padding 调整锚点元素跳转后的位置，使用 margin 抵消 padding 对布局的影响。
+
+```scss
+$levels: 6;
+@for $i from 1 through $levels {
+  h#{$i} {
+    // 假设顶部导航栏的高度为60px
+    // 这种方案可以保证浏览器原本预期效果，即页面滚动到刚好使相关元素置顶的位置，同时不被遮挡
+    padding-top: 60px;
+    margin-top: -60px;
+    // 个人使用的方案，更加简洁客观
+    padding-top: 80px;
+    margin-top: -20px;
+  }
+}
+```
+
+## 监控页面视区以标注文章当前所处位置
+
+接下来，我们希望当标题处于视图中间时，TOC 组件能够响应，通知用户当前处于文章的哪一部分。
+
+我们借助 `IntersectionObserver`API 来实现这个功能
+
+<Quote
+  title="Mdn - IntersectionObserver"
+  to="https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver"
+/>
+
+编写一个 hook 来监听当前所处的 heading id
+
+```ts
+import { useState, useRef, useEffect, useCallback } from "react";
+
+export default function useHeadsObserver(elementsSelector: string) {
+  const observer = useRef<IntersectionObserver>();
+  const [activeId, setActiveId] = useState("");
+
+  useEffect(() => {
+    const handleObsever = (entries: any) => {
+      entries.forEach((entry: any) => {
+        if (entry.isIntersecting) {
+          setActiveId(entry.target.id);
+        }
+      });
+    };
+    observer.current = new IntersectionObserver(handleObsever, {
+      rootMargin: "-5% 0% -30% 0px",
+    });
+    const elements = document.querySelectorAll(elementsSelector);
+    elements.forEach((elem) => observer.current!.observe(elem));
+    return () => observer.current?.disconnect();
+  }, [elementsSelector]);
+
+  return activeId;
+}
+```
+
+使用：
+
+```tsx
+function TOC(range: number): Heading[] {
+  const activeId = useHeadsObserver(map[levelRange]);
+
+  //...
+  {
+    headings.map((item) => (
+      <li className={`${styles[`list-level-${item.level}`]}`} key={item.text}>
+        {/* 添加 a 标签 */}
+        <a
+          style={{
+            color:
+              activeId === item.text
+                ? "var(--color-muted)"
+                : "var(--color-font)",
+          }}
+          className="toc-anchor"
+          href={`#${item.text}`}
+        >
+          {item.text}
+        </a>
+      </li>
+    ));
+  }
+  //...
+}
+```
+
+## 总结
+
+到这里，TOC 组件便大功告成了，在此我们使用到了 DOM 节点获取、DOM 节点标签名、Array 构建、Scss 语法、onhashchange 事件、decodeURIComponent、scroll 处理、IntersectionObserver 等知识点。
+
+这也算是给自己升级系统一个交代 :smile:
+
