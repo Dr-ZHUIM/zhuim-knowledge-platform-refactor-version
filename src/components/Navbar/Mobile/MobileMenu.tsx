@@ -1,6 +1,7 @@
 import NavIcon from "../NavIcon";
 import ColorMode from "../DeskTop/ColorMode";
 import NavItem from "../NavItem";
+import router from "@/router";
 
 type MobileMenuProps = {
   show: boolean;
@@ -25,8 +26,14 @@ export default function MobileMenu({ show, afterNavgate }: MobileMenuProps) {
       <div className="flex flex-col h-full justify-between">
         {/* items */}
         <div className="flex flex-col">
-          <NavItem {...navItemProps} path="/Post" label="Post" />
-          <NavItem {...navItemProps} path="/Snippet" label="Snippet" />
+          {router.map((route) => (
+            <NavItem
+              {...navItemProps}
+              path={route.path}
+              label={route.label}
+              key={route.label}
+            />
+          ))}
         </div>
         {/* icons */}
         <div className="flex flex-row-reverse gap-8 mb-[20px]">

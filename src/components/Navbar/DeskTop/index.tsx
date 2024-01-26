@@ -1,13 +1,15 @@
 import NavItem from "../NavItem";
 import NavIcon from "../NavIcon";
 import ColorMode from "./ColorMode";
+import router from "@/router";
 export default function Navbar() {
   return (
     <nav className="hidden md:flex justify-around items-center select-none gap-8">
       <div className="flex gap-4">
         <NavItem path="/" src="/logo.png" />
-        <NavItem path="/Post" label="Post" />
-        <NavItem path="/Snippet" label="Snippet" />
+        {router.map((route) => (
+          <NavItem path={route.path} label={route.label} key={route.label} />
+        ))}
       </div>
       <div className="flex gap-8">
         <NavIcon
