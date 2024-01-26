@@ -214,3 +214,31 @@ sup {
   cursor: pointer;
   color: var(--color-danger);
 }
+
+.scroll-thin{
+	&::-webkit-scrollbar {
+    width: 6px;
+    height: 12px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--color-primary-400);
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #e4f6fd;
+  }
+}
+
+.scroll-common{
+	&::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--color-primary-400);
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #e4f6fd;
+  }
+}

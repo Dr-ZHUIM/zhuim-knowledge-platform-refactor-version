@@ -10,10 +10,13 @@ type Params = {
 export default function Post({ params: { layer } }: Params) {
   const articles = getArticles({ layer });
   return (
-    <div className="container">
-      <h1 className="px-8 mb-12">{layer}</h1>
-      <div>{<ArticleList layer={layer} articles={articles} />}</div>
-    </div>
+    <>
+      <title>{layer}</title>
+      <div className="container">
+        <h1 className="px-8 mb-12">{layer}</h1>
+        <div>{<ArticleList layer={layer} articles={articles} />}</div>
+      </div>
+    </>
   );
 }
 

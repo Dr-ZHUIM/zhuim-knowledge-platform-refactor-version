@@ -8,10 +8,6 @@ import "@/assets/styles/normalize.scss";
 // import "@/assets/styles/katex.min.css";
 import { Navbar } from "@/components";
 
-export const metadata: Metadata = {
-  title: "Dr.Zhuim's Knowledge Platform",
-};
-
 export default function RootLayout({
   children,
 }: {

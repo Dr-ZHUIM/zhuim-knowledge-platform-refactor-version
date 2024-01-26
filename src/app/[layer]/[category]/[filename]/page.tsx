@@ -1,5 +1,6 @@
 import { ArticleDetail, BreadCrumbs, Toc } from "@/components";
 import { getArticle } from "@/utils";
+import { Metadata } from "next";
 import Image from "next/image";
 type ArticleParams = {
   params: {
@@ -14,6 +15,7 @@ export default async function RemoteMdxPage({
   const { content, title } = getArticle(filename);
   return (
     <>
+      <title>{title}</title>
       <div className="mb-[60px] pt-[60px] pb-[140px] pl-4 bg-[var(--color-muted-background)] duration-500">
         <div className="w-full relative md:max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto">
           <BreadCrumbs />

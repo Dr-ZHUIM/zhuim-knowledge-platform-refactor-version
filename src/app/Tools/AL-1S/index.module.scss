@@ -1,0 +1,11 @@
+.animation{
+	animation: move 1s linear forwards;
+}
+
+@keyframes move {
+	from{
+		right: -100px;
+	}to{
+		right: 100%
+	}
+}
