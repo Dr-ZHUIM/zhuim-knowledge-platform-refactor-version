@@ -13,6 +13,8 @@ body{
   --color-link:hsl(207, 5%, 42%);
   --color-bg: #ffffff;
   --color-muted-background: hsl(210deg, 55%, 92%);
+  --color-muted-background-transparent: hsl(210deg, 55%, 92%,.8);
+  --background-cover: linear-gradient(to right,hsl(210deg, 55%, 92%,1), hsl(210deg, 55%, 92%,.4));
   --color-muted: hsl(245deg, 100%, 60%);
 }
 
@@ -20,6 +22,8 @@ body[data-theme = "dark"]{
   --color-font: #ffffff;
   --color-bg: hsl(210deg, 30%, 8%);
   --color-muted-background: hsl(210deg, 38%, 15%);
+  --color-muted-background-transparent: hsl(210deg, 38%, 15%,.8);
+  --background-cover: linear-gradient(to right,hsl(210deg, 38%, 15%,1), hsl(210deg, 38%, 15%,.4));
   --color-muted: hsl(245, 96%, 83%);
 
 }
@@ -28,6 +32,8 @@ body{
   transition: .5s;
   color: var(--color-font);
   background-color: var(--color-bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 

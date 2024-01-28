@@ -1,11 +1,11 @@
 const router = [
 	{
 		label: 'Post',
-		path: '/Post'
+		path: '/ArticleList/Post'
 	},
 	{
 		label: 'Snippet',
-		path: '/Snippet'
+		path: '/ArticleList/Snippet'
 	},	
 	{
 		label: 'Tools',

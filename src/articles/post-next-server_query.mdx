@@ -1,0 +1,24 @@
+---
+title: 编写服务端请求组件
+category: Next.js
+sidecategory:
+abstract: nothing to say
+layer: Post
+cover:
+createdat: 2024-01-27 14:41
+---
+
+## 依赖库准备
+
+首先需要下载几个 `react-query` 相关依赖库
+
+- `react-query` - 提供 React 使用的 query hooks 与组件
+- `query-core` - 提供 react-query 相关的基建框架，包含请求、缓存与拉取数据功能
+- `react-query-devtools` - 提供开发工具，以便 debug
+
+```
+npm i @tanstack/react-query
+npm i @tanstack/query-core
+npm i -D @tanstack/react-query-devtools
+```
+

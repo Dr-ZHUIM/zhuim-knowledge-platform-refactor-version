@@ -1,10 +1,11 @@
 declare type ArticleDto = {
 	title: string;
 	abstract: string;
-	content: string;
+	content?: string;
 	pathname: string;
 	layer: string;
 	category: string;
+	cover?: string;
 	createdat: number;
 }
 

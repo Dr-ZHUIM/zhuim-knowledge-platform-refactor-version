@@ -33,6 +33,15 @@
   }
 }
 
+@keyframes renderCover{
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+  }
+}
+
 .animate-float{
   animation: float 3s ease-in-out infinite alternate;
 }
@@ -56,4 +65,8 @@
 
 .unmount {
   animation: unmount 0.5s linear;
+}
+
+.render{
+  animation: renderCover forwards 1s ease-out;
 }

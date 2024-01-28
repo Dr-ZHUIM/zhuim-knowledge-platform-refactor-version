@@ -8,6 +8,7 @@ type ReviewProps = {
   backgroundImage?: {
     src: string;
     position?: string;
+    size?: string;
   };
   readMore?: boolean;
 };
@@ -26,10 +27,11 @@ export default function Review(props: ReviewProps) {
           {backgroundImage && (
             <div className="absolute -z-10 left-0 top-0 w-full h-full overflow-hidden pointer-events-none">
               <div
-                className={`w-full h-full bg-no-repeat bg-cover duration-500 ${styles["background"]}`}
+                className={`w-full h-full bg-no-repeat duration-500 ${styles["background"]}`}
                 style={{
                   backgroundImage: `url(${backgroundImage.src})`,
                   backgroundPosition: backgroundImage.position || "right",
+                  backgroundSize: backgroundImage.size || "cover",
                 }}
               />
             </div>

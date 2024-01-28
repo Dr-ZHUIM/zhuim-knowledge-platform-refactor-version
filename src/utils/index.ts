@@ -13,15 +13,14 @@ export function getArticles(filters: {
 	return readdirSync(path).map((filename) => {
     const filePath = join(path, filename);
     const fileContent = readFileSync(filePath, 'utf8');
-    const { data,content } = matter(fileContent);
+    const { data } = matter(fileContent);
     return {
       category: data.category,
 			title: data.title,
 			abstract: data.abstract,
 			layer: data.layer,
 			createdat: data.createdat,
-      pathname: `/${data.layer}/${data.category}/${filename}`.slice(0,-4),
-			content
+      pathname: `/ArticleList/${data.layer}/${data.category}/${filename}`.slice(0,-4),
     };
   }).filter((a) => {
     let tag = true;
@@ -35,16 +34,17 @@ export function getArticles(filters: {
   })
 }
 
-export function getArticle(filename:string){
+export function getArticle(filename:string):ArticleDto{
     const fileContent = readFileSync(join(path, filename + '.mdx'),'utf8')
     const { data,content } = matter(fileContent);
     return {
       category: data.category,
 			title: data.title,
 			abstract: data.abstract,
+      cover: data.cover,
 			layer: data.layer,
 			createdat: data.createdat,
-      pathname: `/${data.layer}/${data.category}/${filename}`,
+      pathname: `/ArticleList/${data.layer}/${data.category}/${filename}`,
 			content:content,
     };
 }
