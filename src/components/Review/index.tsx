@@ -11,17 +11,34 @@ type ReviewProps = {
     size?: string;
   };
   readMore?: boolean;
+  cardClassName?: string;
+  cardStyle?: React.CSSProperties;
+  size?: "sm" | "nm";
 };
 
 export default function Review(props: ReviewProps) {
-  const { content, title, href, backgroundImage, readMore } = props;
+  const {
+    content,
+    title,
+    href,
+    backgroundImage,
+    readMore,
+    cardStyle,
+    cardClassName,
+    size = "nm",
+  } = props;
   return (
     <Link className="block" href={href}>
       <div
-        className={`relative bg-[var(--color-primary-800)] cursor-pointer w-full md:w-[94%] h-[320px] rounded px-[24px] py-[24px] ${styles["review-container"]}`}
+        style={cardStyle}
+        className={`w-full md:w-[94%] ${styles["review-container"]} ${
+          styles[size]
+        } ${"bg-red-500"}`}
       >
         <div className="text-white">
-          <h5 className={`${styles["title"]} duration-300 pt-0 mt-0`}>
+          <h5
+            className={`${styles["title"]} ${styles["h5"]} duration-300 pt-0 mt-0 `}
+          >
             {title}
           </h5>
           {backgroundImage && (

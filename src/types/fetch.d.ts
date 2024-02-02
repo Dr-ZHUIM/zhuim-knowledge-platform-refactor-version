@@ -3,3 +3,8 @@ declare type ZhuimResponseType<T> = {
 	code: number;
 	data: T
 }
+
+declare type PaginationType = {
+	limit: number;
+	page: number;
+}

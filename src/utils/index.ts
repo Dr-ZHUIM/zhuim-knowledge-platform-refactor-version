@@ -1,8 +1,6 @@
 import { readdirSync, readFileSync } from "fs";
 import { join, resolve } from "path";
 import matter from "gray-matter";
-import {serialize} from "next-mdx-remote/serialize"
-import { Metadata } from "next";
 
 const path = resolve("src/articles")
 

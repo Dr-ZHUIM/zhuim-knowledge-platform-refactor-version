@@ -30,6 +30,16 @@ const nextConfig = {
 				protocol: "https",
 				hostname: "images.unsplash.com",
 				port: "",
+			},
+			{
+				protocol: "https",
+				hostname: "github.com",
+				port: "",
+			},			
+			{
+				protocol: "https",
+				hostname: "raw.githubusercontent.com",
+				port: "",
 			}
 		]
 	},
@@ -39,6 +49,10 @@ const nextConfig = {
 				source: '/api/:path*',
 				destination: 'http://127.0.0.1:8080/:path*',
 			},
+			{
+				source: '/papi/:path*',
+				destination: 'https://pokemon.fantasticmao.cn/pokemon/:path*',
+			}
 		]
 	}
 }
