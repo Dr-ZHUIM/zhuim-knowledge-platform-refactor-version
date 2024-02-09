@@ -32,7 +32,8 @@ export function getArticles(filters: {
   })
 }
 
-export function getArticle(filename:string):ArticleDto{
+export function getArticle(filename:string):XOR<ArticleDto,NotFoundType>{
+  try{
     const fileContent = readFileSync(join(path, filename + '.mdx'),'utf8')
     const { data,content } = matter(fileContent);
     return {
@@ -43,6 +44,11 @@ export function getArticle(filename:string):ArticleDto{
 			layer: data.layer,
 			createdat: data.createdat,
       pathname: `/ArticleList/${data.layer}/${data.category}/${filename}`,
-			content:content,
+			content:content
     };
+  }catch (err){
+    return {
+      notFound: true
+    }
+  }
 }

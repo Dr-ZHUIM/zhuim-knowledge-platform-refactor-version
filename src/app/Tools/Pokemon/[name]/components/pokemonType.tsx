@@ -9,7 +9,7 @@ export default function PokemonTypeSpan({ type }: PokemonTypeProps) {
   return (
     <div
       style={{ backgroundColor: calcTypeColor(type) }}
-      className="flex rounded-lg px-2 items-center justify-between text-white w-[65px]"
+      className="flex rounded-lg px-2 items-center justify-between text-white w-[72px]"
     >
       <span className={`sprite-type sprite-type-${calcTypeIndex(type)}`} />
       <span>{PokemonType[type]}</span>

@@ -1,5 +1,6 @@
 import { ArticleList } from "@/components";
 import { getArticles } from "@/utils";
+import { notFound } from "next/navigation";
 
 type Params = {
   params: {
@@ -9,6 +10,9 @@ type Params = {
 
 export default function Post({ params: { layer } }: Params) {
   const articles = getArticles({ layer });
+  if (!articles.length) {
+    notFound();
+  }
   return (
     <>
       <title>{layer}</title>

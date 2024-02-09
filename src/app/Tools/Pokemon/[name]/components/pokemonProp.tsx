@@ -1,19 +1,19 @@
 import { calcLightenColor } from "../../utils";
 type PokemonPropProps = {
-  primaryColor: string;
+  backgroundColor: string;
   title: string;
   content: React.ReactNode;
 };
 
 export default function PokemonProp({
-  primaryColor,
+  backgroundColor,
   content,
   title,
 }: PokemonPropProps) {
   return (
     <div
       style={{
-        backgroundColor: calcLightenColor(primaryColor),
+        backgroundColor,
       }}
       className="flex flex-col items-center px-1 py-2 rounded-lg"
     >

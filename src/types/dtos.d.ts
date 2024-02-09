@@ -9,6 +9,10 @@ declare type ArticleDto = {
 	createdat: number;
 }
 
+declare type NotFoundType = {
+	notFound: boolean
+}
+
 declare type ComponentDto = {
 	id: number;
 	function: string;

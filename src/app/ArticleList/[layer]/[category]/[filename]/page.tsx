@@ -1,6 +1,7 @@
 import { ArticleDetail, BreadCrumbs, Toc } from "@/components";
 import { getArticle } from "@/utils";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 type ArticleParams = {
   params: {
@@ -12,7 +13,11 @@ type ArticleParams = {
 export default async function RemoteMdxPage({
   params: { filename },
 }: ArticleParams) {
-  const { content, title, cover } = getArticle(filename);
+  const articleRes = getArticle(filename);
+  if (articleRes.notFound) {
+    notFound();
+  }
+  const { title, content, cover } = articleRes;
   return (
     <>
       <title>{title}</title>

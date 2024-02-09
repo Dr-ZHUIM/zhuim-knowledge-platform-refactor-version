@@ -8,6 +8,7 @@ import ReactQueryProvider from "@/providers/ReactQueryProviders";
 import getQueryClient from "@/providers/getQueryClient";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { Suspense } from "react";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 export default function RootLayout({
   children,
@@ -25,7 +26,9 @@ export default function RootLayout({
           <ReactQueryProvider>
             <Suspense fallback={<div>Loading...</div>}>
               <HydrationBoundary state={dehydratedState}>
-                <section className="w-full">{children}</section>
+                <AntdRegistry>
+                  <section className="w-full">{children}</section>
+                </AntdRegistry>
               </HydrationBoundary>
             </Suspense>
           </ReactQueryProvider>
