@@ -9,6 +9,16 @@ declare type ArticleDto = {
 	createdat: number;
 }
 
+declare type ArticleMetaData = {
+	title: string;
+	category: string;
+	sidecategory: string;
+	abstract: string;
+	cover: string;
+	layer: string;
+	createdat: number;
+}
+
 declare type NotFoundType = {
 	notFound: boolean
 }

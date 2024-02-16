@@ -1,9 +1,7 @@
 import { ArticleDetail, BreadCrumbs, Toc } from "@/components";
-import { getArticle, getArticle2 } from "@/utils";
+import { getArticle } from "@/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getMDXComponent } from "mdx-bundler/client";
-import Bundlev from "@/components/Article/ArticleDetail/bundlev";
 
 type ArticleParams = {
   params: {
@@ -15,15 +13,11 @@ type ArticleParams = {
 export default async function RemoteMdxPage({
   params: { filename },
 }: ArticleParams) {
-  const articleRes = await getArticle2(filename);
+  const articleRes = getArticle(filename);
   if (articleRes.notFound) {
     notFound();
   }
-  const {
-    code,
-    frontmatter: { title, cover },
-  } = articleRes as any;
-
+  const { title, content, cover } = articleRes;
   return (
     <>
       <title>{title}</title>
@@ -48,7 +42,7 @@ export default async function RemoteMdxPage({
       </div>
       <div className="container flex">
         <div className="w-full md:max-w-[28rem] lg:max-w-2xl xl:max-w-4xl">
-          <Bundlev code={code} />
+          <ArticleDetail source={content!} />
         </div>
         <div className="w-[375px] pl-5 hidden md:block md:w-[20rem] lg:w-[18rem] xl:w-[24rem]">
           <Toc levelRange={5} />

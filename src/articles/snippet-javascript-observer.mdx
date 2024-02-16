@@ -1,0 +1,86 @@
+---
+title: stateObserver
+category: Javascript
+sidecategory:
+abstract: 实现 typescript 版本的观察者模式
+cover: https://images.unsplash.com/photo-1682686581362-796145f0e123?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+layer: Snippet
+createdat: 2024-02-11 17:01
+---
+
+import Observer from "../articlesideComponents/snippet-javascript-observer/index";
+
+## 定义
+
+```ts
+type StateObserverType<T> = {
+  state: T;
+  on<K extends string & keyof T>(
+    event: `${K}Update`,
+    handler: (oldval: T[K], newval: T[K]) => void
+  ): void;
+};
+type Cb = (oldval: any, newval: any) => void;
+type CbArray = Array<Cb>;
+
+function stateObserver<T>(obj: T): StateObserverType<T> {
+  const state = {} as T;
+  const handlers: Record<string, CbArray> = {};
+
+  for (let key in obj) {
+    Object.defineProperty(state, key, {
+      get() {
+        return obj[key];
+      },
+      set(newVal) {
+        handlers[key].forEach((cb) => {
+          cb(obj[key], newVal);
+        });
+        obj[key] = newVal;
+      },
+    });
+  }
+
+  function on(event: string, cb: any) {
+    const key = event.replace("Update", "");
+
+    if (!handlers[key]) {
+      handlers[key] = [];
+    }
+
+    handlers[key].push(cb);
+  }
+
+  return {
+    state,
+    on,
+  };
+}
+```
+
+## 使用
+
+```ts
+const o = {
+  name: "test-name",
+  age: 16,
+  address: "London",
+};
+
+const oObserver = stateObserver(o);
+
+oObserver.on("nameUpdate", (o, n) => {
+  console.log(`${o}-1`, `${n}-1`);
+});
+
+oObserver.on("nameUpdate", (o, n) => {
+  console.log(`${o}-2`, `${n}-2`);
+});
+
+oObserver.on("ageUpdate", (o, n) => {
+  console.log(`${o}-1`, `${n}-1`);
+});
+```
+
+<Observer />
+

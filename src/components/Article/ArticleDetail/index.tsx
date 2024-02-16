@@ -51,7 +51,6 @@ export default function ArticleDetail(props: MDXRemoteProps) {
         Sup: Sup,
         Mark,
         WaitForImage,
-        Image,
       }}
     />
   );
