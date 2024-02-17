@@ -1,9 +1,8 @@
-import { ArticleDetail, BreadCrumbs, Toc } from "@/components";
-import { getArticle, getArticle2 } from "@/utils";
+import { BreadCrumbs, Toc } from "@/components";
+import Bundlev from "@/components/Article/ArticleDetail/bundlev";
+import { getArticle2, ArticleResType } from "@/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getMDXComponent } from "mdx-bundler/client";
-import Bundlev from "@/components/Article/ArticleDetail/bundlev";
 
 type ArticleParams = {
   params: {
@@ -16,13 +15,15 @@ export default async function RemoteMdxPage({
   params: { filename },
 }: ArticleParams) {
   const articleRes = await getArticle2(filename);
+
   if (articleRes.notFound) {
     notFound();
   }
+
   const {
     code,
     frontmatter: { title, cover },
-  } = articleRes as any;
+  } = articleRes as ArticleResType;
 
   return (
     <>

@@ -55,7 +55,7 @@ export function getArticle(filename: string): XOR<ArticleDto, NotFoundType> {
   }
 }
 
-type ArticleResType = {
+export type ArticleResType = {
   code: string
   frontmatter: ArticleMetaData
 }
@@ -82,6 +82,6 @@ export async function getArticle2(filename: string): Promise<XOR<ArticleResType,
   const { code, frontmatter } = await mdxResolver(source,files)
   return {
     code,
-    frontmatter
+    frontmatter,
   } as ArticleResType
 }
