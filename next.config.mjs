@@ -1,5 +1,4 @@
 import remarkGfm from "remark-gfm"
-import remarkMath from "remark-math"
 import remarkEmoji from 'remark-emoji';
 
 import rehypeHighlight from 'rehype-highlight';
@@ -11,7 +10,6 @@ const withMDX = createMDX({
   // Add markdown plugins here, as desired
   options: {
     remarkPlugins: [        
-			remarkMath,
 			remarkGfm,
 			remarkEmoji,
 		],

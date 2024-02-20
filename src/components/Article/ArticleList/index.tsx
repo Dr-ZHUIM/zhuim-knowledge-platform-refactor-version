@@ -24,7 +24,7 @@ export default function ArticleList(props: ArticleListProps) {
         <section key={category}>
           <div className="flex justify-between items-center px-8">
             <h3>{category}</h3>
-            <Link href={`/${layer}/${category}`}>
+            <Link href={`/ArticleList/${layer}/${category}`}>
               <h5 className="text-[var(--color-link)] cursor-pointer hover:text-[var(--color-font)]">
                 {categorys[category].length} Articles
               </h5>

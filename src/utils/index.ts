@@ -2,57 +2,32 @@ import { readdirSync, readFileSync } from "fs";
 import { join, resolve } from "path";
 import matter from "gray-matter";
 import { mdxResolver } from "@/utils/mdxResolver";
+import { ArticleReview } from "./objectMutation";
 
 const path = resolve("src/articles");
-const componentsPath = resolve("src/articlesideComponents");
 
 export function getArticles(filters: {
-  layer?: string,
+  layer: string,
   category?: string
-}): ArticleDto[] {
-  return readdirSync(path).map((filename) => {
-    const filePath = join(path, filename);
-    const fileContent = readFileSync(filePath, 'utf8');
-    const { data } = matter(fileContent);
-    return {
-      category: data.category,
-      title: data.title,
-      abstract: data.abstract,
-      layer: data.layer,
-      createdat: data.createdat,
-      pathname: `/ArticleList/${data.layer}/${data.category}/${filename}`.slice(0, -4),
-    };
-  }).filter((a) => {
-    let tag = true;
-    if (filters.layer) {
-      tag = a.layer === filters.layer
+}) {
+  const layerPath = join(path, filters.layer);
+  let result: ArticleDto[] = [];
+  readdirSync(layerPath).forEach((foldername) => {
+    const filePath = join(layerPath, foldername, "page.mdx");
+    try {
+      const fileContent = readFileSync(filePath, 'utf8');
+      const { data: metaData } = matter(fileContent);
+      const data = { ...metaData, pathname: `/ArticleList/${metaData.layer}/${metaData.category}/${foldername}` } as ArticleDto
+      result.push(new ArticleReview({ ...data }))
+    } catch (err) {
+      return;
     }
-    if (filters.category) {
-      tag = a.category === filters.category
-    }
-    return tag
   })
-}
-
-export function getArticle(filename: string): XOR<ArticleDto, NotFoundType> {
-  try {
-    const fileContent = readFileSync(join(path, filename + '.mdx'), 'utf8')
-    const { data, content } = matter(fileContent);
-    return {
-      category: data.category,
-      title: data.title,
-      abstract: data.abstract,
-      cover: data.cover,
-      layer: data.layer,
-      createdat: data.createdat,
-      pathname: `/ArticleList/${data.layer}/${data.category}/${filename}`,
-      content: content
-    };
-  } catch (err) {
-    return {
-      notFound: true
-    }
+  if (filters.category) {
+    result = result.filter((a) => a.category === filters.category)
+    console.log('result',result)
   }
+  return result;
 }
 
 export type ArticleResType = {
@@ -60,26 +35,31 @@ export type ArticleResType = {
   frontmatter: ArticleMetaData
 }
 
-export async function getArticle2(filename: string): Promise<XOR<ArticleResType, NotFoundType>> {
+type ArticleSource = {
+  foldername:string;
+  layer:string;
+} 
+
+export async function getArticle({foldername, layer}: ArticleSource): Promise<XOR<ArticleResType, NotFoundType>> {
+  const _path = join(path,layer, foldername);
   let source = "";
-  let key = `../articlesideComponents/${filename}/index.tsx`
+  let key = `./components.tsx`
   let files = {
     [key]: ""
   };
   try {
-    // source = readFileSync(join(path, filename + '.mdx'), 'utf8')
-    source = join(path, filename + '.mdx')
+    source = join(_path, 'page.mdx')
   } catch (err) {
     return {
       notFound: true
     }
   }
   try {
-    files[key] =  readFileSync(join(componentsPath, filename, 'index.tsx'), 'utf8')
+    files[key] = readFileSync(join(_path, 'components.tsx'), 'utf8')
   } catch (err) {
-    console.log(filename,":","no components")
+    files[key] = "";``
   }
-  const { code, frontmatter } = await mdxResolver(source,files)
+  const { code, frontmatter } = await mdxResolver(source, files)
   return {
     code,
     frontmatter,

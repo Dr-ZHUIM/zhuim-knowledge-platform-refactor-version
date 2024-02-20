@@ -1,20 +1,21 @@
 import { BreadCrumbs, Toc } from "@/components";
-import Bundlev from "@/components/Article/ArticleDetail/bundlev";
-import { getArticle2, ArticleResType } from "@/utils";
+import { getArticle, ArticleResType } from "@/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { ArticleDetail } from "@/components";
 
 type ArticleParams = {
   params: {
-    filename: string;
+    foldername: string;
     category: string;
+    layer: string;
   };
 };
 
 export default async function RemoteMdxPage({
-  params: { filename },
+  params: { foldername, layer },
 }: ArticleParams) {
-  const articleRes = await getArticle2(filename);
+  const articleRes = await getArticle({ foldername, layer });
 
   if (articleRes.notFound) {
     notFound();
@@ -49,7 +50,7 @@ export default async function RemoteMdxPage({
       </div>
       <div className="container flex">
         <div className="w-full md:max-w-[28rem] lg:max-w-2xl xl:max-w-4xl">
-          <Bundlev code={code} />
+          <ArticleDetail code={code} />
         </div>
         <div className="w-[375px] pl-5 hidden md:block md:w-[20rem] lg:w-[18rem] xl:w-[24rem]">
           <Toc levelRange={5} />

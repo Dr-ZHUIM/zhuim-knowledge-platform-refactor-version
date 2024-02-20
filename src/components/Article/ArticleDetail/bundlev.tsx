@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { getMDXComponent } from "mdx-bundler/client";
+import { MathJaxContext } from "better-react-mathjax";
 import {
   Aside,
   OverflowText,
@@ -17,6 +18,8 @@ import {
   Sup,
   Quote,
   WaitForImage,
+  IMath,
+  BMath,
 } from "@/components";
 
 const globalComponents = {
@@ -30,15 +33,23 @@ const globalComponents = {
   h6: H6,
   Anchor,
   Mark,
-  Pre,
+  pre: Pre,
   Sup,
   Quote,
   WaitForImage,
+  Im: IMath,
+  Bm: BMath,
 };
 
 export default function BundleVersionClient({ code }: { code: string }) {
   const Component = useMemo(() => getMDXComponent(code), [code]);
 
-  return <Component components={globalComponents} />;
+  const config = useMemo(() => ({ loader: { load: ["input/asciimath"] } }), []);
+
+  return (
+    <MathJaxContext config={config}>
+      <Component components={globalComponents} />
+    </MathJaxContext>
+  );
 }
 

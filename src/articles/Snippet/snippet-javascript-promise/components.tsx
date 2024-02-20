@@ -1,0 +1,121 @@
+import { useEffect } from "react";
+
+type PromiseType = "pending" | "fulfilled" | "rejected";
+type ResolveFunc<T> = (value: T) => void;
+type RejectFunc = (reason: unknown) => void;
+type onFullfilledFunc<T> = (value: T) => any;
+type onRejectedFunc = (reason: unknown) => any;
+type ExecutorType<T> = (resolve: ResolveFunc<T>, reject: RejectFunc) => void;
+
+class MyPromise<T> {
+  status: PromiseType;
+  value: T | null;
+  callbacks: {
+    onFullfilled: onFullfilledFunc<T>;
+    onRejected: onRejectedFunc;
+  }[];
+  constructor(executor: ExecutorType<T>) {
+    this.status = "pending";
+    this.value = null;
+    // to solve async callbacks
+    this.callbacks = [];
+    this.tryExecutor(() =>
+      // class's scope is strict mode so you should bind class's this to executor's callback functions
+      executor(this.resolve.bind(this), this.reject.bind(this))
+    );
+  }
+  protected resolve(value: T) {
+    // status defender
+    if (this.status === "pending") {
+      this.status = "fulfilled";
+      this.value = value;
+      setTimeout(() => {
+        this.callbacks.map((callback) => callback.onFullfilled(value));
+      });
+    }
+  }
+  protected reject(reason: any) {
+    // status defender
+    if (this.status === "pending") {
+      this.status = "rejected";
+      this.value = reason;
+      setTimeout(() => {
+        this.callbacks.map((callback) => callback.onRejected(reason));
+      });
+    }
+  }
+  public then(
+    onFullfilled: onFullfilledFunc<T | null> = () => this.value,
+    onRejected: onRejectedFunc = () => this.value
+  ) {
+    const _promise = new MyPromise<T>((resolve, reject) => {
+      if (this.status === "pending") {
+        this.callbacks.push({
+          onFullfilled: (value) => {
+            this.tryThen(_promise, onFullfilled(value), resolve, reject);
+          },
+          onRejected: (reason) => {
+            this.tryThen(_promise, onRejected(reason), resolve, reject);
+          },
+        });
+      }
+      if (this.status === "fulfilled") {
+        setTimeout(() => {
+          this.tryThen(_promise, onFullfilled(this.value), resolve, reject);
+        });
+      } else if (this.status === "rejected") {
+        setTimeout(() => {
+          this.tryThen(_promise, onRejected(this.value), resolve, reject);
+        });
+      }
+    });
+    return _promise;
+  }
+
+  protected tryThen(
+    promise: MyPromise<T>,
+    result: T,
+    resolve: ResolveFunc<T>,
+    reject: RejectFunc
+  ) {
+    try {
+      if (result instanceof MyPromise) {
+        result.then(resolve, reject);
+      } else {
+        resolve(result);
+      }
+    } catch (error) {
+      reject(error);
+    }
+  }
+
+  protected tryExecutor(callback: (...args: unknown[]) => unknown) {
+    try {
+      callback();
+    } catch (error) {
+      this.reject(error);
+    }
+  }
+}
+
+export default function PromiseCore() {
+  useEffect(() => {
+    new MyPromise<string>((resolve) => {
+      resolve("Promise-1 value");
+    })
+      .then((value) => {
+        console.log(value);
+        return "then-1 value";
+      })
+      .then((value) => {
+        console.log(value);
+      });
+    const p = new MyPromise<string>((resolve) => {
+      resolve("Promise-3 value");
+    });
+    p.then(() => p);
+    console.log("同步测试1");
+  }, []);
+
+  return <></>;
+}
