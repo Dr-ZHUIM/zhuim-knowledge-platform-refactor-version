@@ -10,6 +10,7 @@ type BreadCrumbsType = [BreadLabel, BreadPath][];
 
 function splitPath(path: string): BreadCrumbsType {
   const pathpool = path.slice(1).split("/");
+  pathpool.shift();
   pathpool.pop();
   const result: [BreadLabel, BreadPath][] = [];
   pathpool.reduce((acc, cur) => {
@@ -30,7 +31,7 @@ export default function BreadCrumbs() {
   return (
     <div className="flex gap-4">
       {paths.map(([label, path], index) => (
-        <Link key={label} href={path}>
+        <Link key={label} href={`/ArticleList/${path}`}>
           <div className="text-[var(--color-link)] text-[18px]">
             <span className="hover:text-[var(--color-font)] cursor-pointer mr-2	">
               {label}

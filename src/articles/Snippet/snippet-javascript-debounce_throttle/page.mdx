@@ -1,0 +1,69 @@
+---
+title: 防抖节流
+category: JavaScript
+sidecategory:
+abstract: 实现 typescript 版本的防抖节流
+cover:
+layer: Snippet
+createdat: 2024-02-23 17:57
+---
+
+import { Debounce, Throttle } from "./components.tsx";
+
+## Debounce 防抖
+
+<Demo>
+  <Debounce />
+</Demo>
+
+```ts
+type DebounceFunction<T extends (...args: any[]) => any> = (
+  fn: T,
+  delay: number
+) => (...args: Parameters<T>) => void;
+
+const _debounce: DebounceFunction<(...args: any[]) => any> = (fn, delay) => {
+  let timer: NodeJS.Timeout;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+};
+```
+
+---
+
+## Throttle 节流
+
+<Demo>
+  <Throttle />
+</Demo>
+
+```ts
+type ThrottleFunction<T extends (...args: any[]) => any> = (
+  fn: T,
+  interval: number
+) => (...args: Parameters<T>) => void;
+
+const _throttle: ThrottleFunction<(...args: any[]) => any> = (fn, interval) => {
+  let timer: NodeJS.Timeout | null = null;
+  let shouldExecute = true;
+
+  return (...args) => {
+    if (!timer) {
+      fn(...args);
+      shouldExecute = false;
+      timer = setTimeout(() => {
+        timer = null;
+        shouldExecute = true;
+      }, interval);
+    } else if (shouldExecute) {
+      fn(...args);
+      shouldExecute = false;
+    }
+  };
+};
+```
+

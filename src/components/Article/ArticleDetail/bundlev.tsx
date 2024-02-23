@@ -20,7 +20,10 @@ import {
   WaitForImage,
   IMath,
   BMath,
+  Demo,
 } from "@/components";
+import Link from "next/link";
+import { Image } from "antd";
 
 const globalComponents = {
   Aside,
@@ -39,6 +42,9 @@ const globalComponents = {
   WaitForImage,
   Im: IMath,
   Bm: BMath,
+  Link,
+  Demo,
+  Image,
 };
 
 export default function BundleVersionClient({ code }: { code: string }) {

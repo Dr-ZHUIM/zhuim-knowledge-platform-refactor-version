@@ -44,43 +44,45 @@ export default function Toc(props: TocProps) {
   }, [levelRange]);
 
   return (
-    <ul
-      className={`scroll-thin m-0 pb-[25px] pl-[24px] sticky w-full ${styles["list-container"]} top-[200px] overflow-x-hidden whitespace-nowrap text-ellipsis duration-500 ease-out`}
-      style={{
-        opacity: init ? 1 : 0,
-        transform: `translateX(${init ? 0 : "100px"})`,
-      }}
-    >
-      <li className="text-[18px] font-bold tracking-[2px] mb-[16px]">
+    <div className="top-[200px] sticky w-full">
+      <div className="text-[18px] font-bold tracking-[2px] mb-[14px] text-center">
         TABLE OF CONTENTS
-      </li>
-      {headings.map((item) => {
-        return (
-          <li
-            className={`${
-              styles[`list-level-${item.level}`]
-            } whitespace-normal`}
-            key={item.text}
-          >
-            <a
-              className="duration-500"
-              style={{
-                color:
-                  activeId === item.text
-                    ? "var(--color-muted)"
-                    : "var(--color-font)",
-              }}
-              href={`#${item.text}`}
+      </div>
+      <ul
+        className={`scroll-thin m-0 pb-[25px] pl-[24px] ${styles["list-container"]}  overflow-x-hidden whitespace-nowrap text-ellipsis duration-500 ease-out`}
+        style={{
+          opacity: init ? 1 : 0,
+          transform: `translateX(${init ? 0 : "100px"})`,
+        }}
+      >
+        {headings.map((item) => {
+          return (
+            <li
+              className={`${
+                styles[`list-level-${item.level}`]
+              } whitespace-normal`}
+              key={item.text}
             >
-              {item.text}
-            </a>
-          </li>
-        );
-      })}
-      {headings.length === 0 && (
-        <li className="text-[var(--color-link)] ml-12">No Headings</li>
-      )}
-    </ul>
+              <a
+                className="duration-500"
+                style={{
+                  color:
+                    activeId === item.text
+                      ? "var(--color-muted)"
+                      : "var(--color-font)",
+                }}
+                href={`#${item.text}`}
+              >
+                {item.text}
+              </a>
+            </li>
+          );
+        })}
+        {headings.length === 0 && (
+          <li className="text-[var(--color-link)] ml-12">No Headings</li>
+        )}
+      </ul>
+    </div>
   );
 }
 

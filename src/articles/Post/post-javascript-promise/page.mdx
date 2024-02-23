@@ -1,0 +1,270 @@
+---
+title: 从事件循环到任务队列再到Promise
+category: JavaScript
+sidecategory: 
+abstract: JavaScript 中存在很多异步操作,Promise 将异步操作队列化，按照期望的顺序执行，返回符合预期的结果。可以通过链式调用多个 Promise 达到我们的目的Promise 在各种开源库中已经实现，现在标准化后被浏览器默认支持。promise 是一个拥有 then 方法的对象或函数
+cover: 
+layer: Post
+createdat: 2024-02-21 20:25
+---
+
+Promise 是一个函数返回的对象，代表异步操作的最终结果
+
+## 知识前提
+
+### 事件循环
+
+默认情况下，浏览器的每个 tab 对应一个渲染进程，渲染进程包含主线程、合成线程、IO 线程等多个线程。
+
+主线程的任务繁忙，需要处理 DOM、计算样式、处理布局、处理事件响应、执行 JS 代码等任务
+
+其他进程通过 IPC 将任务发送到渲染进程的 I/O 进程，然后 I/O 进程将任务发送到主线程的任务队列
+
+根据队列**先进先出**的特性，最先加入队列的任务将被优先处理。
+
+除去任务队列，浏览器按章 WHATWG 标准实现了延迟队列，用于存放延迟执行的任务
+
+当本轮循环任务执行后，浏览器检查是否有延迟任务过期，如有任务过期，则执行该延迟任务
+
+接下来一起看一段伪代码，我们将任务队列中正常执行的任务称为 `processTask`, 延迟队列中的任务称为 `processDelayTask`
+
+```js
+function MainThread() {
+  while (true) {
+    const task = taskQueue.takeTask();
+    processTask(task);
+    processDelayTask();
+    if (!keepRunning) {
+      break;
+    }
+  }
+}
+```
+
+可以注意到延迟任务在任务的后面执行，这意味着**如果任务的执行事件过长会导致延迟任务无法正常按期执行**
+
+看个案例：
+
+```js
+function sayHello() {
+  console.log('hello');
+}
+function test() {
+  setTimeout(sayHello, 0);
+  for (let i = 0; i < 5000; i++) {
+    console.log(i);
+  }
+}
+test();
+```
+
+即使定时器的延迟只有 0，也需要等待 test 所在的任务执行完后才能执行，同时不同的浏览器会有默认的最小定时器延迟时间<Sup title="如chrome为4ms">注</Sup>,因此 sayHello 的最终延迟时间是比设定时间大的。
+
+#### 宏任务与微任务
+
+在上节，可以发现加入任务队列的新任务由于队列的特性**先入先出**必须等待队列中其他任务执行完毕才能执行，这将难以处理突发的优先级任务。
+
+在任务队列中的任务<Sup title="任务与延迟任务">注</Sup>被称为宏任务(Tasks)，为了解决时效性问题，宏任务执行过程中可以产生微任务(MicroTasks)，并保存在该宏任务执行上下文的微任务队列中，
+在宏任务执行结束前，线程会遍历其微任务队列，将微任务批量执行。
+
+本文的核心主体 Promise 属于微任务
+
+---
+
+## Promise 原理
+
+本文将 Promise 的状态分为两个状态：处理态与状态
+
+处理态是指 Promise 是否处于 settled, 即 Promise 的状态 是否被修改
+
+状态是指 Promise 的 pending、fulfilled、rejected 三个状态
+
+一个 Promise 是一个代理，它代表一个在创建 promise 时不一定已知的值。它允许你将处理程序与异步操作的最终成功值或失败原因关联起来。这使得异步方法可以像同步方法一样返回值：异步方法不会立即返回最终值，而是返回一个 promise，以便在将来的某个时间点提供该值。
+
+一个 Promise 必然处于以下几种状态之一：
+
+1. pending:初始状态
+
+2. fulfilled:意味着操作成功完成。
+
+3. rejecte:意味着操作失败。
+
+一个处于 pending 状态的 Promise 最终状态可以是 fulfilled 并返回一个 value，或者是 rejected 并返回一个 reason。
+当其中任意一种情况发生时，通过 Promise 的 then 方法串联的处理程序将被调用。如果绑定相应处理程序时 Promise 已经兑现或拒绝，
+这处理程序将被立即调用，因此在异步操作完成和绑定处理程序之间不存在竞态条件。
+
+## Promise 流程
+
+以下是典型的 Promise 流程概述：
+
+1. 在构造函数生成新的 Promise 对象时，它还会生成一对相应的 resolveFunc 和 rejectFunc 函数；它们与 Promise 对象“绑定”在一起。
+
+2. executor 通常会封装某些提供基于回调的 API 的异步操作。回调函数（传给原始回调 API 的函数）在 executor 代码中定义，因此它可以访问 resolveFunc 和 rejectFunc。
+
+3. executor 是同步调用的（在构造 Promise 时立即调用），并将 resolveFunc 和 rejectFunc 函数作为传入参数。
+
+4. executor 中的代码有机会执行某些操作。异步任务的最终完成通过 resolveFunc 或 rejectFunc 引起的副作用与 Promise 实例进行通信。这个副作用让 Promise 对象变为 settled 处理态。
+
+   1. 如果先调用 resolveFunc，则传入的值将解决。Promise 可能会保持 pedding（如果传入了另一个 thenable 对象），变为 fulfilled 状态（在传入非 thenable 值的大多数情况下），或者变为 rejected 状态（在解析值无效的情况下）。
+
+   2. 如果先调用 rejectFunc，Promise 立即变为 rejected 状态
+
+5. 一旦一个处理状态的函数被调用后，Promise 的处理态将被锁定
+
+## Promise 构建函数
+
+Promise() 构造函数创建 Promise 对象。它主要用于封装尚未支持 Promise 的基于回调的 API。
+
+抽象态语法：
+
+```ts
+new Promise(executor);
+
+function executor(resolveFunc, rejectFunc) {
+  // 通常，`executor` 函数用于封装某些接受回调函数作为参数的异步操作
+}
+```
+
+实例：
+
+```ts
+const promise1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('foo');
+  }, 300);
+});
+
+promise1.then((value) => {
+  console.log(value);
+  // Expected output: "foo"
+});
+
+console.log(promise1);
+// Expected output: [object Promise]
+```
+
+executor 中抛出的任何错误都会导致 Promise 被拒绝，并且返回值将被忽略。
+
+当通过 new 关键字调用 Promise 构造函数时，它会返回一个 Promise 对象。当 `resolveFunc` 或者 `rejectFunc` 被调用时
+该 Promise 对象的处理态变更为 settled
+
+`resolveFunc` 和 `rejectFunc` 都是函数
+
+```ts
+resolveFunc(value); // 解决时调用
+rejectFunc(reason); // 拒绝时调用
+```
+
+传入 resolveFunc 的 value 参数可以是另一个 Promise 对象，在这种情况下，新构造的 Promise 对象的状态将“锁定”到传入的 Promise 对象（作为 resolution Promise 的一部分）。
+
+rejectFunc 的语义类似于 throw 语句，因此 reason 通常是一个 Error 实例。
+
+倘若调用时不传入值，Promise 的 fulfilled 或者 rejected 的值为 **undefined**
+
+---
+
+## Promise.then
+
+then 方法用于为 Promise 对象的 settled 处理态 设置回调函数。
+
+thenable 协议要求所有类 Promise 对象都提供一个 then() 方法，并且 catch() 和 finally() 方法都会通过调用该对象的 then() 方法来工作。
+
+then 最多接受两个参数：用于 Promise fulfilled 和 rejected 情况的回调函数。
+它立即返回一个等效的 Promise 对象，允许你链接到其他 Promise 方法，从而实现链式调用。
+
+抽象态语法：
+
+```ts
+then(onFulfilled);
+then(onFulfilled, onRejected);
+```
+
+实例：
+
+```ts
+const promise1 = new Promise((resolve, reject) => {
+  resolve('Success!');
+});
+
+promise1.then((value) => {
+  console.log(value);
+  // Expected output: "Success!"
+});
+```
+
+then 方法的参数 `onFulfilled` 与 `onRejected` 都属于回调函数，各自接受相应状态的值<Sup title="即value与reason">注</Sup>
+
+then 会返回一个 Promise,下称为 p，Promise 的状态与值由 `onFulfilled` 或者 `onRejected`的返回值决定：
+
+1. 返回一个值：p 以该返回值作为其 fulfilled 值。
+2. 没有返回任何值：p 以 undefined 作为其 fulfilled 值。
+3. 抛出一个错误：p 抛出的错误作为其 rejected 值。
+4. 返回一个 fulfilled 的 Promise 对象：p 以该 Promise 的值作为其 fulfilled 值。
+5. 返回一个 rejected 的 Promise 对象：p 以该 Promise 的值作为其 rejected 值。
+6. 返回另一个 pending 的 Promise 对象：p 保持待定状态，并在该 Promise 对象被 fulfilled/rejected 后立即以该 Promise 的值作为其 fulfilled/rejected 值。
+
+> 在实践中，通常更希望使用 catch() 方法来捕获被拒绝的 Promise，而不是使用 then() 方法传入两个处理器的语法。
+
+---
+
+## Promise.catch
+
+Promise 实例的 catch() 方法用于注册一个在 promise 处于 rejected 状态时调用的函数。它会立即返回一个等效的 Promise 对象，这可以允许你链式调用其他 promise 的方法。
+此方法是 Promise.prototype.then(undefined, onRejected) 的一种简写形式。
+
+抽象态语法：
+
+```ts
+catch(onRejected)
+```
+
+实例：
+
+```ts
+const promise1 = new Promise((resolve, reject) => {
+  throw new Error('Uh-oh!');
+});
+
+promise1.catch((error) => {
+  console.error(error);
+});
+// Expected output: Error: Uh-oh!
+```
+
+---
+
+## Promise.finally
+
+Promise 实例的 finally() 方法用于注册一个在 promise 处理态为 settled 时调用的函数。它会立即返回一个等效的 Promise 对象，这可以允许你链式调用其他 promise 方法。
+
+抽象态语法：
+
+```ts
+finally(onFinally)
+```
+
+实例：
+
+```ts
+let isLoading = true;
+
+fetch(myRequest)
+  .then((response) => {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return response.json();
+    }
+    throw new TypeError("Oops, we haven't got JSON!");
+  })
+  .then((json) => {
+    /* 进一步处理 JSON */
+  })
+  .catch((error) => {
+    console.error(error); // 这行代码也可能抛出错误，例如：when console = {}
+  })
+  .finally(() => {
+    isLoading = false;
+  });
+```
+
+---
