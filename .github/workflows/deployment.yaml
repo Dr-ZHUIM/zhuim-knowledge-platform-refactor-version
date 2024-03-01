@@ -47,6 +47,7 @@ jobs:
           asset_content_type: application/x-tgz
 
   deploy:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -62,5 +63,4 @@ jobs:
             wget https://github.com/Dr-ZHUIM/zhuim-knowledge-platform-refactor-version/releases/latest/download/release.tgz -O release.tgz
             tar zxvf release.tgz
             npm install
- 
 
