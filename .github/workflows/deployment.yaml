@@ -3,7 +3,7 @@ name: Deployment
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       - name: build application
         run: npm run build
       - name: tarser
-        run: tar -zcvf release.tgz .next next.config.mjs package.json
+        run: tar -zcvf release.tgz .next next.config.mjs package.json public
       # create release
       - name: create release
         id: create_release
@@ -46,7 +46,10 @@ jobs:
           asset_name: release.tgz
           asset_content_type: application/x-tgz
 
-      # deploy
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
@@ -58,3 +61,6 @@ jobs:
             cd /www/new_next_blog
             wget https://github.com/Dr-ZHUIM/zhuim-knowledge-platform-refactor-version/releases/latest/download/release.tgz -O release.tgz
             tar zxvf release.tgz
+            npm install
+ 
+

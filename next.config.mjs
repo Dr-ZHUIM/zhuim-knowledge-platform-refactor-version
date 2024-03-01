@@ -21,6 +21,7 @@ const withMDX = createMDX({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	cacheMaxMemorySize: 0,
 	pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
 	images: {
 		remotePatterns:[
