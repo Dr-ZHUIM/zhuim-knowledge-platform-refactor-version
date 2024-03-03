@@ -21,6 +21,7 @@ const withMDX = createMDX({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	basePath: "/nextBlog",
 	pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
 	images: {
 		remotePatterns:[
