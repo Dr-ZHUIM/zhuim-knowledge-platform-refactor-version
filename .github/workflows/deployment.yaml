@@ -57,6 +57,7 @@ jobs:
 
     steps:
       - name: deploy
+        timeout-minutes: 60
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.HOST}}
