@@ -20,6 +20,11 @@ jobs:
         run: npm install
       - name: build application
         run: npm run build
+      - name: delete cache
+        run: |
+          cd ./.next
+          rm -rf cache
+          cd ../
       - name: tarser
         run: tar -zcvf release.tgz .next next.config.mjs package.json public
       # create release
