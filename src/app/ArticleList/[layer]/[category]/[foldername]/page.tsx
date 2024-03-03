@@ -36,7 +36,7 @@ export default async function RemoteMdxPage({
         </div>
         <Image
           className="absolute animate-float right-0 bottom-[-50px] hidden md:block z-10"
-          src="/m.png"
+          src="/nextBlog/m.png"
           alt="zhuim"
           width={150}
           height={100}

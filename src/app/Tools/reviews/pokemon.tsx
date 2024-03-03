@@ -4,7 +4,7 @@ export function PokemonReview() {
   return (
     <Review
       backgroundImage={{
-        src: "/tools/pokemon/pikachu.png",
+        src: "/nextBlog/tools/pokemon/pikachu.png",
         position: "right",
         size: "contain",
       }}

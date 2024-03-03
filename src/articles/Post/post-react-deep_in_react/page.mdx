@@ -1,14 +1,14 @@
 ---
 title: 解析 React 渲染流程
 category: React
-sidecategory: 
+sidecategory:
 abstract: 本文将着重于剖析 React 的渲染是如何进行的，以及分析 Context 与 React-Redux 是如何来影响渲染的。
 cover: https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
 layer: Post
 createdat: 2024-02-21 14:34
 ---
 
-import {KeyExample, ParentAndChildDemo} from "./components.tsx";
+import { KeyExample, ParentAndChildDemo } from "./components.tsx";
 
 ## 引用说明
 
@@ -51,7 +51,7 @@ import {KeyExample, ParentAndChildDemo} from "./components.tsx";
 
 ### 渲染工作概览
 
-<Image src="/article_img/React/react-hook-timeline-diagram.png" />
+<Image src="/nextBlog/article_img/React/react-hook-timeline-diagram.png" />
 
 在整个渲染行为流程中，React 会从 组件树的根部 Fiber (the root of Component tree)开始向下遍历去获取**所有被标记为需要更新的**组件。
 
@@ -117,7 +117,7 @@ React 将 渲染工作 分为两个阶段 渲染阶段 与 提交阶段 (Render 
 > - Render Phase 负责渲染组件，**初始化或更新非副作用 hooks**，生成 React Elements， 然后计算变化
 > - Commit Phase 负责将变化呈现在 DOM 上
 
-<Image src="/article_img/React/react-hook-lifecycle.png" />
+<Image src="/nextBlog/article_img/React/react-hook-lifecycle.png" />
 
 在 React 将 DOM 更新后，React 会将<Mark>所有的指向 DOM 节点或者组件实例</Mark>的`ref` 更新。
 
@@ -157,7 +157,7 @@ function ChildComponent() {
 
 当点击按钮触发渲染时，由于父组件进行了更新渲染，子组件也不得不进行渲染，**即使没有任何 DOM 变化**
 
-在 React 18 版本，React 添加了 并发渲染 (concurrent render) 的一些 API，比如说 <Link className="inline" target="_blank" href="https://react.dev/reference/react/useTransition#usetransition" children="useTransition"></Link>
+在 React 18 版本，React 添加了 并发渲染 (concurrent render) 的一些 API，比如说 <Link className="inline" target="_blank" href="https://react.dev/reference/react/useTransition#usetransition" children="useTransition"/>
 
 它给予 React 暂停 Render Phase 的工作，来让浏览器去处理事件，React 随之会暂停，直到浏览器返回可使用时间超过阈值时，再继续工作。
 
@@ -417,14 +417,14 @@ return <>{todos.map(todo => <TodoListItem key={todo.id} {...todo} />) }</TodoLis
 
 ```tsx
 const items = [
-  { id: '00001', todo: '00001' },
-  { id: '00002', todo: '00002' },
-  { id: '00003', todo: '00003' },
+  { id: "00001", todo: "00001" },
+  { id: "00002", todo: "00002" },
+  { id: "00003", todo: "00003" },
 ];
 
 function KeyExample() {
   const [todos, setTodos] = useState(items);
-  const [mode, setMode] = useState<'IndexMode' | 'IdMode'>('IndexMode');
+  const [mode, setMode] = useState<"IndexMode" | "IdMode">("IndexMode");
 
   const handleReverse = useCallback(() => {
     setTodos((v) => [...v.reverse()]);
@@ -437,10 +437,10 @@ function KeyExample() {
         <button
           className="btn btn-primary"
           onClick={() =>
-            setMode((v) => (v === 'IndexMode' ? 'IdMode' : 'IndexMode'))
+            setMode((v) => (v === "IndexMode" ? "IdMode" : "IndexMode"))
           }
         >
-          切换至{mode === 'IndexMode' ? 'IdMode' : 'IndexMode'}
+          切换至{mode === "IndexMode" ? "IdMode" : "IndexMode"}
         </button>
         <button className="btn btn-primary" onClick={handleReverse}>
           反转数组
@@ -449,7 +449,7 @@ function KeyExample() {
       {todos.map((todo, index) => (
         <div
           className="flex gap-5 mt-5 mb-5"
-          key={mode === 'IdMode' ? todo.id : index}
+          key={mode === "IdMode" ? todo.id : index}
         >
           todo: {todo.todo}
           <input
@@ -480,7 +480,7 @@ function KeyExample() {
 也就是说，**key 的修改会导致组件重新渲染**，开发者可以通过为组件绑定一个 key，然后通过改变这个 key 而重新渲染这个组件。
 
 <Demo>
-	<KeyExample />
+  <KeyExample />
 </Demo>
 
 ### 批处理 (Batching) 与 不同 React 版本批处理出现的时机
@@ -713,9 +713,8 @@ function OptimizedParent() {
 ```
 
 <Demo>
-	<ParentAndChildDemo />
+  <ParentAndChildDemo />
 </Demo>
-
 
 ### 修改 props 对渲染行为的影响
 
@@ -730,7 +729,7 @@ function OptimizedParent() {
 ```tsx
 function ParentComponent() {
   const onClick = () => {
-    console.log('Button clicked');
+    console.log("Button clicked");
   };
 
   const data = { a: 1, b: 2 };
@@ -750,7 +749,7 @@ const MemoizedChildComponent = React.memo(ChildComponent);
 
 function ParentComponent() {
   const onClick = () => {
-    console.log('Button clicked');
+    console.log("Button clicked");
   };
 
   const data = { a: 1, b: 2 };
@@ -776,7 +775,7 @@ function ParentComponent() {
 
 正如上文的案例比较，不是所有情况都需要用到缓存技术，缓存本身也有性能损耗。
 
-在官方文章<Link target="_blank" href="hhttps://react.dev/reference/react/memo#skipping-re-rendering-when-props-are-unchanged" children='the new React docs specifically address the "memo everything?" question'></Link>如是提到：
+在官方文章<Link target="_blank" href="hhttps://react.dev/reference/react/memo#skipping-re-rendering-when-props-are-unchanged" children='the new React docs specifically address the "memo everything?" question'/>如是提到：
 
 > **Optimizing with memo is only valuable when your component re-renders often with the same exact props, and its re-rendering logic is expensive.** If there is no perceptible lag when your component re-renders, memo is unnecessary. Keep in mind that memo is completely useless if the props passed to your component are always different, such as if you pass an object or a plain function defined during rendering. This is why you will often need useMemo and useCallback together with memo.
 >
@@ -803,9 +802,9 @@ function get32Bit(num: number) {
 function BitExposer({ num, style, className }: BitExposerType) {
   return (
     <div
-      className={`${styles.bitExposer}${className && ' ' + className}`}
+      className={`${styles.bitExposer}${className && " " + className}`}
       style={{
-        fontFamily: 'monospace',
+        fontFamily: "monospace",
         ...style,
       }}
     >
@@ -832,7 +831,7 @@ useMemo 与 useCallback 同理，它们的使用情况如下：
 
 ```tsx
 function Dropdown({ allItems, text }) {
-  const searchOptions = { matchMode: 'whole-word', text };
+  const searchOptions = { matchMode: "whole-word", text };
 
   const visibleItems = useMemo(() => {
     return searchItems(allItems, searchOptions);
@@ -863,7 +862,7 @@ function Dropdown({ allItems, text }) {
 ```tsx
 function Dropdown({ allItems, text }) {
   const visibleItems = useMemo(() => {
-    const searchOptions = { matchMode: 'whole-word', text };
+    const searchOptions = { matchMode: "whole-word", text };
     return searchItems(allItems, searchOptions);
   }, [allItems, text]); // ✅  只有allItems和text更新，visibleItems才会更新
   // ...
@@ -989,7 +988,7 @@ function ChildComponent() {
 
 function ParentComponent() {
   const [a, setA] = useState(0);
-  const [b, setB] = useState('text');
+  const [b, setB] = useState("text");
 
   const contextValue = { a, b };
 
@@ -1047,7 +1046,7 @@ const MemoizedChildComponent = React.memo(ChildComponent);
 
 function ParentComponent() {
   const [a, setA] = useState(0);
-  const [b, setB] = useState('text');
+  const [b, setB] = useState("text");
 
   const contextValue = { a, b };
 
@@ -1084,3 +1083,4 @@ function ParentComponent() {
 - Context 是用于传输数据的管道
 - Context.Provider 的属性 value 跟踪的是值，需要更新对象类型的 value，要传入新的引用地址。
 - 建议将 Context 的顶级子元素使用 React.memo 维护起来，以此避免默认渲染行为
+

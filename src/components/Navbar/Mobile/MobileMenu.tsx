@@ -38,16 +38,20 @@ export default function MobileMenu({ show, afterNavgate }: MobileMenuProps) {
         {/* icons */}
         <div className="flex flex-row-reverse gap-8 mb-[20px]">
           <ColorMode isMobile={true} />
-          <NavIcon size={30} src="/icons/icon_home_dark.png" href="/" />
           <NavIcon
             size={30}
-            src="/icons/icon_user_dark.png"
+            src="/nextBlog/icons/icon_home_dark.png"
+            href="/"
+          />
+          <NavIcon
+            size={30}
+            src="/nextBlog/icons/icon_user_dark.png"
             target="_blank"
             href="http://www.zhuim.fun/"
           />
           <NavIcon
             size={30}
-            src="/icons/icon_github_dark.png"
+            src="/nextBlog/icons/icon_github_dark.png"
             target="_blank"
             href="https://github.com/Dr-ZHUIM"
           />

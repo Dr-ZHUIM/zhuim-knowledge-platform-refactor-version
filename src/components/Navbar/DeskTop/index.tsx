@@ -6,23 +6,23 @@ export default function Navbar() {
   return (
     <nav className="hidden md:flex justify-around items-center select-none gap-8">
       <div className="flex gap-4">
-        <NavItem path="/" src="/logo.png" />
+        <NavItem path="/" src="/nextBlog/logo.png" />
         {router.map((route) => (
           <NavItem path={route.path} label={route.label} key={route.label} />
         ))}
       </div>
       <div className="flex gap-8">
         <NavIcon
-          src="/icons/icon_github.png"
+          src="/nextBlog/icons/icon_github.png"
           target="_blank"
           href="https://github.com/Dr-ZHUIM"
         />
         <NavIcon
-          src="/icons/icon_user.png"
+          src="/nextBlog/icons/icon_user.png"
           target="_blank"
           href="http://www.zhuim.fun/"
         />
-        <NavIcon src="/icons/icon_home.png" href="/" />
+        <NavIcon src="/nextBlog/icons/icon_home.png" href="/" />
         <ColorMode />
       </div>
     </nav>

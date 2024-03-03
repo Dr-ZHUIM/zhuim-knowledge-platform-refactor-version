@@ -6,6 +6,8 @@ import rehypeMathjax from 'rehype-mathjax';
 
 import createMDX from '@next/mdx'
 
+const isProd = process.env.NODE_ENV === 'production'
+
 const withMDX = createMDX({
   // Add markdown plugins here, as desired
   options: {
@@ -22,6 +24,7 @@ const withMDX = createMDX({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	basePath: "/nextBlog",
+	assetPrefix: isProd ? "http://www.zhuim.fun/nextBlog/" : "/nextBlog/",
 	pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
 	images: {
 		remotePatterns:[

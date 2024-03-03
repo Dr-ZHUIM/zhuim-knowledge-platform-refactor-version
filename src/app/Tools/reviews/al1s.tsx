@@ -4,7 +4,7 @@ export function Al1sReview() {
   return (
     <Review
       backgroundImage={{
-        src: "/tools/aris/chara1.png",
+        src: "/nextBlog/tools/aris/chara1.png",
         position: "right -125px top 0",
       }}
       href={"/Tools/AL-1S"}
