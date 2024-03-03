@@ -67,5 +67,5 @@ jobs:
             cd /www/new_next_blog
             wget https://github.com/Dr-ZHUIM/zhuim-knowledge-platform-refactor-version/releases/latest/download/release.tgz -O release.tgz
             tar zxvf release.tgz
-            npm install
+            npm i
 
