@@ -15,7 +15,7 @@ export default function Page() {
           <div className="flex justify-center items-end">
             <h4 className="font-bold p-0 my-0 mr-2">Welcome To Aris</h4>
             <Image
-              src="/nextBlog/tools/aris/move2.gif"
+              src="/tools/aris/move2.gif"
               width={50}
               height={50}
               alt="move1"

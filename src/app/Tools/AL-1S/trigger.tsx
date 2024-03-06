@@ -32,7 +32,7 @@ export default function TriggerButton() {
         src: imgs[Math.floor(Math.random() * 2)],
       },
     ]);
-    const audio = new Audio("/nextBlog/tools/aris/cute_noise.mp3");
+    const audio = new Audio("//nextBlogtools/aris/cute_noise.mp3");
     audio.play();
     audio.addEventListener("ended", () => {
       audio.remove();

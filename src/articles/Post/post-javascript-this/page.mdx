@@ -1,0 +1,196 @@
+---
+title: 对 this 对象的理解
+category: JavaScript
+sidecategory:
+abstract: 函数的 this 关键字在 JavaScript 中的表现略有不同，此外，在严格模式和非严格模式之间也会有一些差别, 本文将大致讲解 this 在不同情况的指向目标
+cover: https://images.unsplash.com/photo-1472437774355-71ab6752b434?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+layer: Post
+createdat: 2024-03-04 14:48
+---
+
+## 定义
+
+与其他语言相比，函数的 this 关键字在 JavaScript 中的表现略有不同，此外，在严格模式和非严格模式之间也会有一些差别。
+
+在绝大多数情况下，函数的调用方式决定了 this 的值（运行时绑定）。this 不能在执行期间被赋值，并且在每次函数被调用时 this 的值也可能会不同。ES5 引入了 bind 方法来设置函数的 this 值，而不用考虑函数如何被调用的。ES2015 引入了箭头函数，箭头函数不提供自身的 this 绑定（this 的值将保持为闭合词法上下文的值）。
+
+## 绑定规则
+
+根据不同的使用场合，this 有不同的值，主要分为下面几种情况：
+
+- 函数上下文
+- 类上下文
+- 全局上下文
+
+### 函数上下文
+
+在函数内部，`this` 的值取决于函数如何被调用。可以将 `this` 看作是函数的一个隐藏参数（就像函数定义中声明的参数一样），`this` 是语言在函数体被执行时为你创建的绑定。
+
+在 **非严格模式** 下，在 `this` 没有明确指向时，直接调用函数，`this` 指向 `window`, 可以访问到使用 `var` 声明的全局变量。
+
+```js
+var str = "this is a string";
+
+function showStr() {
+  return this.str;
+}
+
+showStr(); // this is a string
+```
+
+<Aside title="在非严格模式下，this 指向 window 的原因">
+  	在非严格模式下，一个特殊的过程称为 this 替换确保 this 的值总是一个对象。这意味着： 
+		
+		如果一个函数被调用时 this 被设置为 undefined 或 null，this 会被替换为 globalThis。
+
+    如果函数被调用时 this 被设置为一个原始值，this 会被替换为原始值的包装对象。
+
+</Aside>
+
+在 **严格模式** 下, 不能将全局对象用于默认绑定，那么 `this` 就会指向 `undefined`
+
+```js
+"use strict";
+
+var str = "this is a string";
+
+function showStr() {
+  return this.str; // Uncaught TypeError: Cannot read properties of undefined (reading 'a')
+}
+
+showStr();
+```
+
+<Aside title="为何使用 const、let 定义的变量在这种条件下无法访问">
+
+使用 `var` 定义的变量会被添加到全局对象的属性上，一般为 window 对象。
+
+使用 `let` 或者 `const` 声明的变量不会被绑定到全局对象上，只能在定义变量的块级作用域中访问。
+
+在 `this` 指向全局对象 `window` 的情况下自然不能访问 `const` 、 `let` 定义的变量了。
+
+</Aside>
+
+函数可以作为某个对象的方法调用，由于 `this` 的绑定在运行时进行，此处我们要分析函数的调用者究竟是什么。
+
+此处调用者为对象 `obj`, 对应的 `this` 则指向该对象。
+
+```js
+function test() {
+  return this.x;
+}
+
+const obj = {
+  x: 123,
+  m: test,
+};
+
+obj.m(); //123
+```
+
+当对象为嵌套对象时，要看是哪一个对象调用的函数。
+
+以下的案例中，嵌套对象 `obj` 拥有属性 `nestedObj` 也是一个对象，其中的 `m` 属性为方法 `test`，这里 `this` 指向调用者 `nestedObj`。
+
+```js
+function test() {
+  return this.x;
+}
+
+const obj = {
+  x: "x of outside obj",
+  nestedObj: {
+    m: test,
+  },
+};
+
+console.log(obj.nestedObj.m()); // undefined
+```
+
+#### 显式绑定 this
+
+在一般的函数调用中，`this` 是通过函数的前缀（点前面的部分）隐式传递的，就像个参数一样。开发者也可用通过 `Function` 原型上的
+`call` 、`apply` 、`bind` 三个方法来显式地指定 `this`
+
+`call` 、`apply` 就是一个简单的函数调用，很容易理解
+
+`call` (thisArg,...args) => ReturnOfFunction
+
+`apply` (thisArg,argsArray) => ReturnOfFunction
+
+`bind` 则是重新返回一个 `this` 被显式指定的新函数
+
+#### 回调函数
+
+回调函数的 `this` 要看这个函数 APi 的实现者是如何决定的，默认情况下 回调函数的 `this` 指向全局对象。
+
+一些 API 会允许开发者显示提供一个 `this` 值，比如说 `Array.prototype.forEach`
+
+```ts
+
+type forEachType <T> ( callbackFn: (value: T, index: number, Array: T[]) => void,thisArg?: any ): void
+
+```
+
+#### 箭头函数
+
+箭头函数的 `this` 的绑定时机与一般函数不同，一般函数在函数执行时绑定，箭头函数则在**编译**的时候绑定，这意味着箭头函数的行为就像它们是“自动绑定”的——无论如何调用，`this` 都绑定到函数创建时的值。
+
+此外，当使用 `call`、`bind` 或 `apply` 调用箭头函数时，`thisArg` 参数会被忽略。不过，开发者仍然可以使用这些方法传递其他参数。
+
+```js
+const obj = { name: "obj" };
+
+// 尝试使用 call 设置 this
+console.log(foo.call(obj) === globalObject); // true
+
+// 尝试使用 bind 设置 this
+const boundFoo = foo.bind(obj);
+console.log(boundFoo() === globalObject); // true
+```
+
+#### 构造函数
+
+构造函数的 `this` 指向实例对象，`this` 的值会成为 `new` 表达式的值
+
+```js
+function C() {
+  this.a = 37;
+}
+
+let o = new C();
+console.log(o.a); // 37
+```
+
+如果构造函数返回另一个非原始值，那么 `this` 绑定的实例对象将被丢弃，而返回那个非原始值
+
+```js
+function C2() {
+  this.a = 37;
+  return { a: 38 };
+}
+
+o = new C2();
+console.log(o.a); // 38
+```
+
+### 类上下文
+
+类上下文比较好理解：共有两种上下文 —— 实例上下文、静态上下文
+
+基类构造函数的 `this` 与函数上下文中的构造函数一同， 指向实例对象。
+
+子代类的构造函数的 `this` 取决与 `super` 函数在构造函数中创建的对象。
+
+共有或私有属性指向实例对象
+
+静态属性指向类
+
+### 全局上下文
+
+在全局执行上下文中（在任何函数或类之外；可能在全局范围内定义的块或箭头函数内部），`this` 值取决于脚本运行的执行上下文。像回调一样，`this` 值由运行时环境（调用者）确定。
+
+在脚本的顶层，无论是否在严格模式下，`this` 会指向 `globalThis`。这通常与全局对象相同——例如，如果源代码放在 HTML 的 `<script>` 元素内并作为脚本执行，`this === window`。
+
+如果源代码作为模块加载（对于 HTML，这意味着在 `<script>` 标签中添加 `type="module"` ），在顶层，`this` 总是 `undefined`。
+

@@ -1,7 +1,7 @@
 ---
 title: 使用 `as` 关键字重定义 key
 category: TypeScript
-sidecategory: 
+sidecategory:
 abstract: 这篇文章主要讨论了 TypeScript 中使用 as 关键字来重定义属性 key 的操作。
 cover: https://images.unsplash.com/photo-1699885960867-56d5f5262d38?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
 layer: Post
@@ -23,20 +23,20 @@ interface Todo {
   completed: boolean;
 }
 
-const todo: MyReadonly2<Todo, 'title' | 'description'> = {
-  title: 'Hey',
-  description: 'foobar',
+const todo: MyReadonly2<Todo, "title" | "description"> = {
+  title: "Hey",
+  description: "foobar",
   completed: false,
 };
 
-todo.title = 'Hello'; // Error: cannot reassign a readonly property
-todo.description = 'barFoo'; // Error: cannot reassign a readonly property
+todo.title = "Hello"; // Error: cannot reassign a readonly property
+todo.description = "barFoo"; // Error: cannot reassign a readonly property
 todo.completed = true; // OK
 ```
 
 在 GitHub 上看到一个题解，可以说非常有趣
 
-<Image src="/article_img/TypeScript/issue_8.png" />
+<Image src="/nextBlog/article_img/TypeScript/issue_8.png" />
 
 可以看见 type `MyReadonly2` 是一个联合类型，其旨在满足两个条件：
 
@@ -176,11 +176,11 @@ type Getters<T> = {
 
 ```ts
 type RemoveKindField<Type> = {
-  [key in keyof Type as Exclude<Property, 'kind'>]: Type[key];
+  [key in keyof Type as Exclude<Property, "kind">]: Type[key];
 };
 
 interface Circle {
-  kind: 'circle';
+  kind: "circle";
   radius: number;
 }
 
@@ -195,11 +195,11 @@ type KindlessCircle = {
 
 ```ts
 type EventConfig<Events extends { kind: string }> = {
-  [E in Events as E['kind']]: (event: E) => void;
+  [E in Events as E["kind"]]: (event: E) => void;
 };
 
-type SquareEvent = { kind: 'square'; x: number; y: number };
-type CircleEvent = { kind: 'circle'; radius: number };
+type SquareEvent = { kind: "square"; x: number; y: number };
+type CircleEvent = { kind: "circle"; radius: number };
 
 type Config = EventConfig<SquareEvent | CircleEvent>;
 
@@ -208,3 +208,4 @@ type Config = {
   circle: (event: CircleEvent) => void;
 };
 ```
+

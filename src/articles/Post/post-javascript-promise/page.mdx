@@ -1,9 +1,9 @@
 ---
 title: 从事件循环到任务队列再到Promise
 category: JavaScript
-sidecategory: 
-abstract: JavaScript 中存在很多异步操作,Promise 将异步操作队列化，按照期望的顺序执行，返回符合预期的结果。可以通过链式调用多个 Promise 达到我们的目的Promise 在各种开源库中已经实现，现在标准化后被浏览器默认支持。promise 是一个拥有 then 方法的对象或函数
-cover: 
+sidecategory:
+abstract: JavaScript 中存在很多异步操作,Promise 将异步操作队列化，按照期望的顺序执行，返回符合预期的结果。可以通过链式调用多个 Promise 达到我们的目的
+cover:
 layer: Post
 createdat: 2024-02-21 20:25
 ---
@@ -47,7 +47,7 @@ function MainThread() {
 
 ```js
 function sayHello() {
-  console.log('hello');
+  console.log("hello");
 }
 function test() {
   setTimeout(sayHello, 0);
@@ -130,7 +130,7 @@ function executor(resolveFunc, rejectFunc) {
 ```ts
 const promise1 = new Promise((resolve, reject) => {
   setTimeout(() => {
-    resolve('foo');
+    resolve("foo");
   }, 300);
 });
 
@@ -183,7 +183,7 @@ then(onFulfilled, onRejected);
 
 ```ts
 const promise1 = new Promise((resolve, reject) => {
-  resolve('Success!');
+  resolve("Success!");
 });
 
 promise1.then((value) => {
@@ -222,7 +222,7 @@ catch(onRejected)
 
 ```ts
 const promise1 = new Promise((resolve, reject) => {
-  throw new Error('Uh-oh!');
+  throw new Error("Uh-oh!");
 });
 
 promise1.catch((error) => {
@@ -250,8 +250,8 @@ let isLoading = true;
 
 fetch(myRequest)
   .then((response) => {
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
       return response.json();
     }
     throw new TypeError("Oops, we haven't got JSON!");
@@ -268,3 +268,4 @@ fetch(myRequest)
 ```
 
 ---
+

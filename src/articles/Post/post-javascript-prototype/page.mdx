@@ -1,0 +1,90 @@
+---
+title: 原型与原型链
+category: JavaScript
+sidecategory:
+abstract: 本文将着重讲解Js的继承方案 —— 原型
+cover:
+layer: Post
+createdat: 2024-03-05 15:54
+---
+
+## 原型
+
+JS 常被描述为一种基于原型的语言——每个对象拥有一个原型对象。
+
+当访问一个对象的属性时，它不仅会在对象本身上寻找，还会顺着原型链向上搜索，直至寻找到一个相应的属性或者抵达原型链的末端 `null`。
+
+准确地说，这些属性和方法定义在队形的构造函数之上的 `prototype` 属性上，而非实例对象本身。
+
+我们知道函数来源于构造函数 `Function` 创建的，那么函数也是一个对象，让我们以函数做个例子来看看原型的存在：
+
+```js
+function foo() {}
+console.log(foo.prototype);
+```
+
+控制台输出
+
+```js
+{
+    constructor: ƒ doSomething(),
+    __proto__: {
+        constructor: ƒ Object(),
+        hasOwnProperty: ƒ hasOwnProperty(),
+        isPrototypeOf: ƒ isPrototypeOf(),
+        propertyIsEnumerable: ƒ propertyIsEnumerable(),
+        toLocaleString: ƒ toLocaleString(),
+        toString: ƒ toString(),
+        valueOf: ƒ valueOf()
+    }
+}
+```
+
+## 原型链
+
+原型对象也可能拥有原型，并从中继承方法和属性，一层一层、以此类推。这种关系常被称为原型链 (prototype chain)，它解释了为何一个对象会拥有定义在其他对象中的属性和方法
+
+在对象实例和它的构造器之间建立一个链接（它是**proto**属性，是从构造函数的 prototype 属性派生的），之后通过上溯原型链，在构造器中找到这些属性和方法
+
+```js
+function Person(name) {
+  this.name = name;
+  this.age = 18;
+  this.sayName = function () {
+    console.log(this.name);
+  };
+}
+// 第二步 创建实例
+var person = new Person("person");
+```
+
+<Image src="/nextBlog/article_img/JavaScript/proto_case.png" alt="proto_case" />
+
+我们知道：
+
+构造函数 `Person` 存在原型对象 `Person.prototype`。
+
+构造函数生成实例对象 `person`, `person` 的 `__proto__` 指向构造函数 `Person` 原型对象。
+
+`Person.prototype.__proto__` 指向内置对象，因为 `Person.prototype` 是个对象，默认是由 `Object` 函数作为类创建的，而 `Object.prototype` 为内置对象。
+
+`Person.__proto__` 指向内置匿名函数 `anonymous`，因为 `Person` 是个函数对象，默认由 `Function` 作为类创建。
+
+`Function.prototype` 和 `Function.__proto__` 同时指向内置匿名函数 `anonymous`，这样原型链的终点就是 `null`
+
+## 总结
+
+`__proto__` 作为不同对象之间的桥梁，是用来指向创建它的构造函数的原型对象的。
+
+<Image src="/nextBlog/article_img/JavaScript/proto_core.png" alt="proto_core" />
+
+下面做出总结：
+
+一切对象都是继承自 Object 对象， Object 对象直接继承根源对象 null。
+
+一切的函数对象（包括 Object 对象），都是继承自 Function 对象。
+
+Object 对象直接继承自 Function 对象。
+
+Function 对象的 **proto** 会指向自己的原型对象，最终还是继承自 Object 对象。
+
