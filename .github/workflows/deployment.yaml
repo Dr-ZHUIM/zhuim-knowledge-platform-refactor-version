@@ -67,6 +67,7 @@ jobs:
           script: |
             cd /www/new_next_blog
             wget https://github.com/Dr-ZHUIM/zhuim-knowledge-platform-refactor-version/releases/latest/download/release.tgz -O release.tgz
+            rm -rf .next
             tar zxvf release.tgz
             npm i
 
