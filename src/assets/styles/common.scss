@@ -4,7 +4,7 @@
 
 @layer components{
   .container{
-    @apply py-[60px] w-full max-w-[375px] md:max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto
+    @apply py-[60px] w-full max-w-[375px] md:max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto px-[14px] md:px-[0]
   }
 }
 
@@ -40,13 +40,13 @@ html {
   --font-sm: 0.875rem;
   --font-vsm: 0.75rem;
   --font-nm: 1rem;
-  --font-vnm: 1.1rem;
-  --font-lg: 1.25rem;
-  --font-vlg: 1.5rem;
-  --font-hg: 1.75rem;
-  --font-vhg: 2rem;
-  --font-ex: 2.25rem;
-  --font-vex: 2.5rem;
+  --font-vnm: 1.05rem;
+  --font-lg: 1.15rem;
+  --font-vlg: 1.45rem;
+  --font-hg: 1.70rem;
+  --font-vhg: 1.95rem;
+  --font-ex: 2.20rem;
+  --font-vex: 2.45rem;
   --font-family: 'League Mono', 'Fira Mono', monospace;
   --font-family-mono: 'League Mono', 'Fira Mono', monospace;
   --font-family-spicy: 'Sriracha', 'Wotfard', Futura, -apple-system, sans-serif;

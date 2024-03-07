@@ -1,109 +1,55 @@
-export const metadata = {
-  title: "Dr.Zhuim's Knowledge Platform",
-};
-
 <div className="container">
-# Dr.Zhuim's knowledge platform
+<div className="text-[24px] font-bold mb-4 text-center"> 📖 Dr.Zhuim 知识平台</div>
+你好! 👋 欢迎来到 Dr.Zhuim 的知识平台, 你能在这里获取我的一些文章、代码以及一些有趣的小玩具。
 
-Hi! 👋 Welcome to my knowledge platform, here you may find out my demos, snippets or expriences of workflow.
+本平台最近从 vite + react + mdx 的架构更改成了 next + mdx + mdx-bundler 的架构，很高兴能够与大家分享在本架构中如何写文章：
 
-## :rocket: Let's see what can be a demo!
+我使用了约定式开发的方式，要求文章的目录必须保持如下的格式：
 
-This platform is based on Mdx and Remark libs which means every demo should consist of a .tsx file and a .mdx file.
-
-Such as the demonstration below :
-
-A typical Count demo of React
-
-<br />
-
-Here's React-part code:
-
-```js
-import $Mdx from "./home.mdx";
-import FadeIN from "@/components/FadeIn/FadeIn";
-import { useState } from "react";
-
-function CountDemo() {
-  const [count, setCount] = useState(0);
-  return (
-    <div>
-      <button onClick={() => setCount((v) => v + 1)}>count++</button>
-      <span style={{ marginLeft: "25px" }}>{count}</span>
-    </div>
-  );
-}
-
-export default function Home() {
-  return (
-    <section>
-      <FadeIN
-        children={
-          <$Mdx
-            components={{
-              CountDemo,
-            }}
-          />
-        }
-      />
-    </section>
-  );
-}
+```markdown
+- [name]
+  - page.mdx
+  - components.tsx
+  - index.module.css
 ```
 
-And Here's the Mdx-part code until this line:
+在文章的 metaData 同样有约定要求：
 
-````js
-# Dr.Zhuim's knowledge platform
+```markdown
+---
 
-Hi! 👋 Welcome to my knowledge platform, here you may find out my demos, snippets or expriences of workflow.
+title: [标题]
+category: [分类]
+sidecategory: [副分类]
+abstract: [摘要]
+cover: [封面]
+layer: [板块]
+createdat: [时间] //由 Vscode snippet variables提供
 
-## :rocket: Let's see what can be a demo!
-
-This platform is based on Mdx and Remark libs which means every demo should consist of a .tsx file and a .mdx file.
-
-Such as the demonstration below :
-
-A typical Count demo of React
-
-<CountDemo />
-
-<br />
-
-Here's React-part code:
-
-```js
-import $Mdx from './home.mdx';
-import FadeIN from '@/components/FadeIn/FadeIn';
-import { useState } from 'react';
-
-function CountDemo() {
-  const [count, setCount] = useState(0);
-  return (
-    <div>
-      <button onClick={() => setCount((v) => v + 1)}>count++</button>
-      <span style={{ marginLeft: '25px' }}>{count}</span>
-    </div>
-  );
-}
-
-export default function Home() {
-  return (
-    <section>
-      <FadeIN
-        children={
-          <$Mdx
-            components={{
-              CountDemo,
-            }}
-          />
-        }
-      />
-    </section>
-  );
-}
+---
 ```
-````
+
+在这样的模式下，比起使用 next-mdx-remote, mdx-bundler 可以更加轻松提供动态路由、组件引入的功能，同时不需要另外自开发 esbuild 组件。
+
+因此书写文章就变成了轻松的事情：
+
+```mdx
+---
+{ /* metadata */ }
+---
+
+import { ThisIsAComponent } from "./component.tsx";
+
+## Whaterver Heading 😄
+
+<ThisisAComponent />
+```
+
+**为什么不使用 next-mdx-remote?**
+
+next-mdx-remote 并不存在 bundler 功能，在使用 fs 模块/数据库
+获取文章后，获取的 mdx 文件本质上仍是字符串，next-mdx-remote 只提供了词义解析、服务端支持的功能，
+这会导致很难将本地或者服务端储存的组件引入 mdx 中。
 
 </div>
 

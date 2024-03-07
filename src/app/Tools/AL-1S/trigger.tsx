@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./index.module.scss";
+import Image from "next/image";
 
 type Aris = {
   id: number;
@@ -32,7 +33,7 @@ export default function TriggerButton() {
         src: imgs[Math.floor(Math.random() * 2)],
       },
     ]);
-    const audio = new Audio("//nextBlogtools/aris/cute_noise.mp3");
+    const audio = new Audio("/nextBlog/tools/aris/cute_noise.mp3");
     audio.play();
     audio.addEventListener("ended", () => {
       audio.remove();
@@ -50,10 +51,12 @@ export default function TriggerButton() {
         </button>
       </div>
       {arises.map((el) => (
-        <img
+        <Image
+          width={250}
+          height={250}
           key={el.id}
           onAnimationEnd={() => handleAnimationEnd(el.id)}
-          className={`absolute bottom-0 right-[-100px] object-contain w-[250px] z-[1] ${styles["animation"]}`}
+          className={`absolute bottom-0 right-[-100px] object-contain z-[1] ${styles["animation"]}`}
           src={el.src}
           alt="bangbangkabang"
         />
