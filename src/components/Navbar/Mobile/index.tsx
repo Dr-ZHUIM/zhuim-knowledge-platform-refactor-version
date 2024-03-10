@@ -10,7 +10,7 @@ export default function MobileNavbar() {
   return (
     <>
       <div className="flex relative pr-4 md:hidden justify-between items-center">
-        <NavItem path="/" src="/nextBlog/logo.png" />
+        <NavItem path="/" src="/blog/logo.png" />
         <MobileMenuToggle show={showMenu} onToggle={toggleShowMenu} />
         <MobileMenu
           afterNavgate={() => toggleShowMenu(false)}

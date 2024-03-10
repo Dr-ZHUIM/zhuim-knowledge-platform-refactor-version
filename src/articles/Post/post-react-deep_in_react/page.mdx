@@ -51,7 +51,7 @@ import { KeyExample, ParentAndChildDemo } from "./components.tsx";
 
 ### 渲染工作概览
 
-<Image src="/nextBlog/article_img/React/react-hook-timeline-diagram.png" />
+<Image src="/blog/article_img/React/react-hook-timeline-diagram.png" />
 
 在整个渲染行为流程中，React 会从 组件树的根部 Fiber (the root of Component tree)开始向下遍历去获取**所有被标记为需要更新的**组件。
 
@@ -117,7 +117,7 @@ React 将 渲染工作 分为两个阶段 渲染阶段 与 提交阶段 (Render 
 > - Render Phase 负责渲染组件，**初始化或更新非副作用 hooks**，生成 React Elements， 然后计算变化
 > - Commit Phase 负责将变化呈现在 DOM 上
 
-<Image src="/nextBlog/article_img/React/react-hook-lifecycle.png" />
+<Image src="/blog/article_img/React/react-hook-lifecycle.png" />
 
 在 React 将 DOM 更新后，React 会将<Mark>所有的指向 DOM 节点或者组件实例</Mark>的`ref` 更新。
 

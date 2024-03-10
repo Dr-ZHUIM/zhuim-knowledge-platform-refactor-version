@@ -18,6 +18,8 @@ jobs:
           node-version: 18.18.2
       - name: install libs
         run: npm install
+      - name: handle next.js v14.0.4 deploy issue
+        run: npm run pre
       - name: build application
         run: npm run build
       - name: delete cache
@@ -26,7 +28,7 @@ jobs:
           rm -rf cache
           cd ../
       - name: tarser
-        run: tar -zcvf release.tgz .next next.config.mjs package.json public
+        run: tar -zcvf release.tgz .next next.config.mjs package.json public src
       # create release
       - name: create release
         id: create_release
@@ -66,8 +68,10 @@ jobs:
           port: ${{secrets.PORT}}
           script: |
             cd /www/new_next_blog
+            pm2 stop blog_n
             rm -rf .next
             wget https://github.com/Dr-ZHUIM/zhuim-knowledge-platform-refactor-version/releases/latest/download/release.tgz -O release.tgz
             tar zxvf release.tgz
             npm i
+            pm2 start blog_n
 

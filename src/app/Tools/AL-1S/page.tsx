@@ -15,7 +15,7 @@ export default function Page() {
           <div className="flex justify-center items-end">
             <h4 className="font-bold p-0 my-0 mr-2">Welcome To Aris</h4>
             <Image
-              src="/nextBlog/tools/aris/move2.gif"
+              src="/blog/tools/aris/move2.gif"
               width={50}
               height={50}
               alt="move1"
@@ -29,13 +29,13 @@ export default function Page() {
           <div
             className="w-full h-full pointer-events-none bg-no-repeat bg-contain bg-left-bottom opacity-40"
             style={{
-              backgroundImage: `url(/nextBlog/tools/aris/chara2.png)`,
+              backgroundImage: `url(/blog/tools/aris/chara2.png)`,
             }}
           />
           <div
             className="w-full h-full pointer-events-none bg-no-repeat bg-contain bg-right-bottom opacity-40"
             style={{
-              backgroundImage: `url(/nextBlog/tools/aris/chara1.png)`,
+              backgroundImage: `url(/blog/tools/aris/chara1.png)`,
             }}
           />
         </div>

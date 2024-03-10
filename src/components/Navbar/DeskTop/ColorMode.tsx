@@ -17,12 +17,12 @@ export default function ColorMode({
   const getsrc = () => {
     if (colorMode === "light") {
       return isMobile
-        ? "/nextBlog/icons/icon_sun_dark.png"
-        : "/nextBlog/icons/icon_sun.png";
+        ? "/blog/icons/icon_sun_dark.png"
+        : "/blog/icons/icon_sun.png";
     } else {
       return isMobile
-        ? "/nextBlog/icons/icon_moon_dark.png"
-        : "/nextBlog/icons/icon_moon.png";
+        ? "/blog/icons/icon_moon_dark.png"
+        : "/blog/icons/icon_moon.png";
     }
   };
 

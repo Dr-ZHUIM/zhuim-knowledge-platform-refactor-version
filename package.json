@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "pre": "node ./deployment/script.js",
     "start": "next start -p 8086",
     "lint": "next lint",
     "test": "jest --watch"

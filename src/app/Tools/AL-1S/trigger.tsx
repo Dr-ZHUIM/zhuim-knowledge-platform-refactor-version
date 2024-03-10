@@ -10,10 +10,7 @@ type Aris = {
   src: string;
 };
 
-const imgs = [
-  "/nextBlog/tools/aris/move1.gif",
-  "/nextBlog/tools/aris/move2.gif",
-];
+const imgs = ["/blog/tools/aris/move1.gif", "/blog/tools/aris/move2.gif"];
 
 export default function TriggerButton() {
   const [count, setCount] = useState(0);
@@ -33,7 +30,7 @@ export default function TriggerButton() {
         src: imgs[Math.floor(Math.random() * 2)],
       },
     ]);
-    const audio = new Audio("/nextBlog/tools/aris/cute_noise.mp3");
+    const audio = new Audio("/blog/tools/aris/cute_noise.mp3");
     audio.play();
     audio.addEventListener("ended", () => {
       audio.remove();
