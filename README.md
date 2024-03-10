@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## 📖 Dr.Zhuim 知识平台
 
-## Getting Started
+你好! 👋 欢迎来到 Dr.Zhuim 的知识平台, 你能在这里获取我的一些文章、代码以及一些有趣的小玩具。
 
-First, run the development server:
+本平台最近从 vite + react + mdx 的架构更改成了 next + mdx + mdx-bundler 的架构，很高兴能够与大家分享在本架构中如何写文章：
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+我使用了约定式开发的方式，要求文章的目录必须保持如下的格式：
+
+```markdown
+- [name]
+  - page.mdx
+  - components.tsx
+  - index.module.css
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+在文章的 metaData 同样有约定要求：
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```markdown
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+title: [标题]
+category: [分类]
+sidecategory: [副分类]
+abstract: [摘要]
+cover: [封面]
+layer: [板块]
+createdat: [时间] //由 Vscode snippet variables提供
 
-## Learn More
+---
+```
 
-To learn more about Next.js, take a look at the following resources:
+在这样的模式下，比起使用 next-mdx-remote, mdx-bundler 可以更加轻松提供动态路由、组件引入的功能，同时不需要另外自开发 esbuild 组件。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+因此书写文章就变成了轻松的事情：
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```mdx
+---
+{ /* metadata */ }
+---
 
-## Deploy on Vercel
+import { ThisIsAComponent } from "./component.tsx";
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Whaterver Heading 😄
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<ThisisAComponent />
+```
+
+**为什么不使用 next-mdx-remote?**
+
+next-mdx-remote 并不存在 bundler 功能，在使用 fs 模块/数据库
+获取文章后，获取的 mdx 文件本质上仍是字符串，next-mdx-remote 只提供了词义解析、服务端支持的功能，
+这会导致很难将本地或者服务端储存的组件引入 mdx 中。
