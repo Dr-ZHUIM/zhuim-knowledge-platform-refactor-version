@@ -6,7 +6,11 @@ const router = [
 	{
 		label: 'Snippet',
 		path: '/ArticleList/Snippet'
-	},	
+	},
+	{
+		label: 'Life',
+		path: '/ArticleList/Life'
+	},		
 	{
 		label: 'Tools',
 		path: '/Tools'

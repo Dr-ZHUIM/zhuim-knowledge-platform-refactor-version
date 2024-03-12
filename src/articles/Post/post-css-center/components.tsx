@@ -1,6 +1,6 @@
 const boxStyle: React.CSSProperties = {
   backgroundColor: "rgb(224, 206, 247)",
-  border: "5px solid rebeccapurple;",
+  border: "5px solid rebeccapurple",
 };
 
 const childStyle: React.CSSProperties = {

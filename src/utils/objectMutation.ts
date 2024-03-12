@@ -5,6 +5,7 @@ export class ArticleReview{
 	layer:string
 	createdat:number
 	pathname:string
+	cover?: string
 	constructor(data:ArticleDto){
 		this.title = data.title
 		this.category = data.category
@@ -12,5 +13,6 @@ export class ArticleReview{
 		this.layer = data.layer
 		this.createdat = data.createdat
 		this.pathname = data.pathname
+		this.cover = data.cover
 	}
 }

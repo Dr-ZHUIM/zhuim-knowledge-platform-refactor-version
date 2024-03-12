@@ -1,4 +1,3 @@
-import styles from "./index.module.scss";
 import { Review } from "@/components";
 
 type ArticleReviewProps = {
@@ -19,6 +18,13 @@ export default function ArticleReview({ article }: ArticleReviewProps) {
         readMore={true}
         href={article.pathname}
         title={article.title}
+        backgroundImage={
+          article.cover
+            ? {
+                src: article.cover,
+              }
+            : undefined
+        }
       />
     </>
   );

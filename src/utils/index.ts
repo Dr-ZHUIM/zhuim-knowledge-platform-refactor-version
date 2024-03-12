@@ -12,17 +12,21 @@ export function getArticles(filters: {
 }) {
   const layerPath = join(path, filters.layer);
   let result: ArticleDto[] = [];
-  readdirSync(layerPath).forEach((foldername) => {
-    const filePath = join(layerPath, foldername, "page.mdx");
-    try {
-      const fileContent = readFileSync(filePath, 'utf8');
-      const { data: metaData } = matter(fileContent);
-      const data = { ...metaData, pathname: `/ArticleList/${metaData.layer}/${metaData.category}/${foldername}` } as ArticleDto
-      result.push(new ArticleReview({ ...data }))
-    } catch (err) {
-      return;
-    }
-  })
+  try{
+    readdirSync(layerPath).forEach((foldername) => {
+      const filePath = join(layerPath, foldername, "page.mdx");
+      try {
+        const fileContent = readFileSync(filePath, 'utf8');
+        const { data: metaData } = matter(fileContent);
+        const data = { ...metaData, pathname: `/ArticleList/${metaData.layer}/${metaData.category}/${foldername}` } as ArticleDto
+        result.push(new ArticleReview({ ...data }))
+      } catch (err) {
+        return;
+      }
+    })
+  }catch(err){
+    return result;
+  }
   if (filters.category) {
     result = result.filter((a) => a.category === filters.category)
     console.log('result',result)
